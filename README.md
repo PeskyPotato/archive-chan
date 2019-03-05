@@ -13,7 +13,7 @@ The url to a thread passed in as a positional argument as well as a number of fl
 This is the help output
 ```
 pepe@boysclub:~/4chan-archiver$ python3 archiver.py -h
-usage: archiver.py [-h] [-p] [-r RETRIES] [--posts POSTS] Thread
+usage: archiver.py [-h] [-p] [-r RETRIES] [--posts POSTS] [-v] Thread
 
 Archives 4chan threads
 
@@ -26,6 +26,7 @@ optional arguments:
   -r RETRIES, --retries RETRIES
                         Set total number of retries if a download fails
   --posts POSTS         Number of posts to download
+  -v, --verbose         Print more information on each post
 ```
 
 Here is an example that downloads every post in a thread and saves all the media uploaded.

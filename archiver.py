@@ -4,8 +4,10 @@ from urllib.request import urlopen
 from urllib.request import urlretrieve
 from urllib.error import URLError
 from os import sys
+from time import time
 import os
 import argparse
+
 
 # Boards
 boards = {
@@ -89,13 +91,16 @@ path_to_css = ''
 path_to_download = '' 
 total_retries = 5
 total_posts = None
+verbose = False
+#number of posts, number of images
+stats = []
 
 '''
 Get user input, assigns url, thread, flags and 
 all other global variables
 '''
 def parse_input():
-    global url, preserve, thread, cat, path_to_css, path_to_download, total_retries, total_posts
+    global url, preserve, thread, cat, path_to_css, path_to_download, total_retries, total_posts, verbose
 
     # Parse input
     parser = argparse.ArgumentParser(description="Archives 4chan threads")
@@ -103,14 +108,17 @@ def parse_input():
     parser.add_argument("-p","--preserve_files", help="Save images and video files locally", action="store_true")
     parser.add_argument("-r", "--retries", help="Set total number of retries if a download fails")
     parser.add_argument("--posts", help="Number of posts to download")
+    parser.add_argument("-v", "--verbose", help="Print more information on each post", action="store_true")
     
     args = parser.parse_args()
 
     url = args.Thread
 
     if args.preserve_files:
-        print("preserving files")
         preserve = True
+
+    if args.verbose:
+        verbose = True
 
     if args.retries:
         total_retries = int(args.retries)
@@ -132,11 +140,11 @@ def parse_input():
         thread = url_split[-1]
         cat = url_split[-3]
 
-    print(url, thread)
-
     path_to_download = '{}/{}'.format(cat, thread)
     if not os.path.exists(path_to_download):
         os.makedirs(path_to_download)
+
+    if verbose: print("Downloading thread:", thread)
 
 '''
 Donwload file to `path` with `name`. If fails
@@ -144,8 +152,11 @@ wait and retry, until total retries reached.
 '''
 def download(path, name, retries = 0):
         try:
-            print("Downloading", path, name)
+            if verbose: print("Downloading image:", path, name)
             urlretrieve('{}'.format(path), '{}/{}'.format(path_to_download, name))
+            # with urlopen(path) as in_file, open('{}/{}'.format(path_to_download, name), 'wb') as out_file:
+            #     print(int(in_file.getheader('Content-Length'))/1024)
+            #     out_file.write(in_file.read())
         except URLError:
             if(total_retries > retries):
                 print("Failed, retrying", retries)
@@ -188,13 +199,8 @@ def parse_html():
     op_pid = op_post[0].find_all("div", {"class":"post op"})[0]['id']
     op_img_src = 'https:{}'.format(op_img_src)
 
-    print("-----------------")
-    print("subject ", op_subject)
-    print("message ", op_message)
-    print("img ", op_img_src , " text ", op_img_text)
-    print("name " + op_name)
-    print("date " + op_date)
-    print("pid " + op_pid)
+    if verbose:
+        print("Downloading post:", op_pid, "posted on", op_date)
 
     if preserve:
         download(op_img_src, op_img_text)
@@ -235,6 +241,9 @@ def parse_html():
         # html_file.write('\t\t\t<blockquote class="postMessage" id="{}">\n\t\t\t\t{}\n\t\t\t</blockquote>\n\t\t</p>\n'.format(op_pid, op_message))
         html_file.write('\t\t\t{}\n'.format(op_message))
 
+        reply_count = 0
+        image_count = 1
+
         # Fit the background with the text + media
         html_file.write('\t\t<div style="clear: both;"></div>\n\t</div>\n')
         counter = 1
@@ -243,26 +252,21 @@ def parse_html():
             reply_img = reply.find_all("div", {"class":"fileText"})
             reply_img_src = ''
             if len(reply_img) > 0:
-                print("we have an image")
                 reply_img = reply_img[0].find_all("a")[0]
                 reply_img_src = reply_img['href']
                 reply_img_text = reply_img.text
                 reply_img_src = 'https:{}'.format(reply_img_src)
-                
+
                 if preserve:
                     download(reply_img_src, reply_img_text)
                     reply_img_src = '{}/{}'.format(path_to_download, reply_img_text)
+                    image_count += 1
 
             reply_name = reply.find_all("span", {"class":"name"})[0].text
             reply_date = reply.find_all("span", {"class":"dateTime"})[0].text
             reply_pid = reply.find_all("div", {"class":"post reply"})[0]['id']
 
-            print("----------")
-            print("message", reply_message)
-            print("img", reply_img)
-            print("name", reply_name)
-            print("date", reply_date)
-            print("pid", reply_pid)
+            if verbose: print("Downloading reply:", reply_pid, "replied on", reply_date)
 
             ###########
             #  REPLY  # 
@@ -299,8 +303,16 @@ def parse_html():
                 counter +=1
                 if counter > total_posts:
                     break
+            
+            reply_count += 1
 
+        print("Replies downloaded:", reply_count, "Images downloaded:", image_count)
 
-if __name__ == "__main__":
+def main():
+    start_time = time()
     parse_input()
     parse_html()
+    print("Time elapsed:", str(time()-start_time) + "s")
+
+if __name__ == "__main__":
+    main()

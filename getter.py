@@ -5,6 +5,7 @@ from urllib.request import urlretrieve
 from urllib.error import URLError
 from writer import writeReply
 from os import sys
+from post import Post
 
 '''
 Donwload file to `path` with `name`. If fails wait and retry, 
@@ -58,8 +59,8 @@ def getOP(page_soup, verbose, preserve, path_to_download, total_retries, thread)
         download(op_img_src, op_img_text, verbose, path_to_download, total_retries)
         op_img_src = '{}/{}'.format(thread, op_img_text)
 
-    # return (op_message, op_img_src, op_img_text, op_subject, op_name, op_date, op_pid)
-    return (op_name, op_img_src, op_img_text, op_date, op_message, op_subject, op_pid)
+    p1 = Post(op_name, op_date, op_message, op_pid, op_img_src, op_img_text, op_subject)
+    return p1
 
 '''
 Gets the reply information from page soup and appends
@@ -99,8 +100,10 @@ def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries,
         reply_pid = reply.find_all("div", {"class":"post reply"})[0]['id']
 
         if verbose: print("Downloading reply:", reply_pid, "replied on", reply_date[:-12])
+        
+        reply_info = Post(reply_name, reply_date, reply_message, reply_pid, reply_img_src, reply_img)
 
-        writeReply(thread, reply_pid, reply_name, reply_img_src, reply_img_text, reply_date, reply_message, cat)
+        writeReply(thread, cat, reply_info)
 
         if total_posts:
             counter += 1

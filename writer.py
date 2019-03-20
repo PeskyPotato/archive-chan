@@ -55,6 +55,7 @@ boards = {
     "t" : ["Torrents", "favicon.ico", "styles.css"],
     "hr" : ["High Resolution", "favicon.ico", "styles.css"],
     "gif" : ["Adult GIF", "favicon.ico", "styles.css"],
+    "aco" : ["Adult Cartoons", "favicon.ico", "styles.css"],
     #Other
     "trv" : ["Travel", "favicon-ws.ico", "styles-ws.css"],
     "fit" : ["Fitness", "favicon-ws.ico", "styles-ws.css"],
@@ -99,28 +100,28 @@ op_img_text - original file name of image as string
 op_date - date the post was made as string
 op_message - message with original html formatting as string
 '''
-def writeOP(thread, cat, op_pid, op_name, op_img_src, op_img_text, op_date, op_message):
+def writeOP(thread, cat, op):
     with open("{}/{}.html".format(cat, thread), "a+") as html_file:
         # Title with link to media
-        html_file.write('\t<div id="{}" class="post op">\n'.format(op_pid))
-        html_file.write('\t\t<span class="name">{}</span>\n'.format(op_name))
+        html_file.write('\t<div id="{}" class="post op">\n'.format(op.pid))
+        html_file.write('\t\t<span class="name">{}</span>\n'.format(op.name))
         html_file.write('\t\tFile:\n')
-        html_file.write('\t\t<a id="postlink" href="{}">{}</a>\n'.format(op_img_src, op_img_text))
-        html_file.write('\t\t{}\n\t\t<br>\n'.format(op_date))
+        html_file.write('\t\t<a id="postlink" href="{}">{}</a>\n'.format(op.img_src, op.img_text))
+        html_file.write('\t\t{}\n\t\t<br>\n'.format(op.date))
 
         # Media
-        if op_img_src[-4:] == 'webm':
+        if op.img_src[-4:] == 'webm':
             html_file.write('\t\t<p style="float: left;">\n')
             html_file.write('\t\t\t<video height="450" controls>\n')
-            html_file.write('\t\t\t\t<source src="{}" type="video/webm">\n\t\t\t</video>\n\t\t</p>\n'.format(op_img_src))
+            html_file.write('\t\t\t\t<source src="{}" type="video/webm">\n\t\t\t</video>\n\t\t</p>\n'.format(op.img_src))
 
         else:
             html_file.write('\t\t<p style="float: left;">\n')
-            html_file.write('\t\t\t<img src="{}" style="max-height: 250px">\n\t\t</p>\n'.format(op_img_src))
+            html_file.write('\t\t\t<img src="{}" style="max-height: 250px">\n\t\t</p>\n'.format(op.img_src))
 
         # Message beside media
         html_file.write('\t\t<p style="float: left;">\n')
-        html_file.write('\t\t\t{}\n'.format(op_message))
+        html_file.write('\t\t\t{}\n'.format(op.message))
 
         # Fit the background with the text + media
         html_file.write('\t\t<div style="clear: both;"></div>\n\t</div>\n')
@@ -128,31 +129,31 @@ def writeOP(thread, cat, op_pid, op_name, op_img_src, op_img_text, op_date, op_m
 '''
 Appends to a file the a reply with an image if passed in
 '''
-def writeReply(thread, reply_pid, reply_name, reply_img_src, reply_img_text, reply_date, reply_message, cat):
+def writeReply(thread, cat, reply):
     with open("{}/{}.html".format(cat, thread), "a+") as html_file:
         # Title with link to media
-        html_file.write('\t<div id="{}" class="post reply">\n'.format(reply_pid))
-        html_file.write('\t\t<span class="name">{}</span>\n'.format(reply_name))
+        html_file.write('\t<div id="{}" class="post reply">\n'.format(reply.pid))
+        html_file.write('\t\t<span class="name">{}</span>\n'.format(reply.name))
 
         # Media
-        if reply_img_src != '':
+        if reply.img_src != '':
             html_file.write('\t\tFile:\n')
-            html_file.write('\t\t<a id="postlink" href="{}">{}</a>\n\t\t'.format(reply_img_src, reply_img_text))
-        html_file.write('\t\t{}\n\t\t<br>\n'.format(reply_date))
+            html_file.write('\t\t<a id="postlink" href="{}">{}</a>\n\t\t'.format(reply.img_src, reply.img_text))
+        html_file.write('\t\t{}\n\t\t<br>\n'.format(reply.date))
 
-        if reply_img_src != '':
-            if reply_img_src[-4:] == 'webm':
+        if reply.img_src != '':
+            if reply.img_src[-4:] == 'webm':
                 html_file.write('\t\t<p style="float: left;">\n')
                 html_file.write('\t\t\t<video height="450" controls>\n')
-                html_file.write('\t\t\t\t<source src="{}" type="video/webm">\n\t\t\t</video>\n\t\t</p>\n'.format(reply_img_src))
+                html_file.write('\t\t\t\t<source src="{}" type="video/webm">\n\t\t\t</video>\n\t\t</p>\n'.format(reply.img_src))
 
             else:
                 html_file.write('\t\t<p style="float: left;">\n')
-                html_file.write('\t\t\t<img src="{}" style="max-height: 250px">\n\t\t</p>\n'.format(reply_img_src))
+                html_file.write('\t\t\t<img src="{}" style="max-height: 250px">\n\t\t</p>\n'.format(reply.img_src))
 
         # Message beside media
         html_file.write('\t\t<p style="float: left;">\n')
-        html_file.write('\t\t\t{}\n'.format(reply_message))
+        html_file.write('\t\t\t{}\n'.format(reply.message))
 
         # Fit the background with the text + media
         html_file.write('\t\t<div style="clear: both;"></div>\n\t</div>')

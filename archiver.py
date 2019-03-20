@@ -2,6 +2,7 @@ from writer import *
 from getter import *
 import argparse
 from time import time
+from post import Post
 import os
 
 url = ''
@@ -94,7 +95,7 @@ def parse_html():
 
     writeHeader(thread, cat)
     op_info  = getOP(page_soup, verbose, preserve, path_to_download, total_retries, thread)    
-    writeOP(thread, cat, op_info[5], op_info[0], op_info[1], op_info[2], op_info[3], op_info[4])
+    writeOP(thread, cat, op_info)
     getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, thread, total_posts, cat)
 
 def main():

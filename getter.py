@@ -52,8 +52,7 @@ def getOP(page_soup, verbose, preserve, path_to_download, total_retries, thread)
     op_pid = op_post[0].find_all("div", {"class":"post op"})[0]['id']
     op_img_src = 'https:{}'.format(op_img_src)
 
-    if verbose:
-        print("Downloading post:", op_pid, "posted on", op_date[:-12])
+    if verbose: print("Downloading post:", op_pid, "posted on", op_date[:-12])
 
     if preserve:
         download(op_img_src, op_img_text, verbose, path_to_download, total_retries)
@@ -92,7 +91,7 @@ def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries,
 
             if preserve:
                 download(reply_img_src, reply_img_text, verbose, path_to_download, total_retries)
-                reply_img_src = '{}/{}'.format(path_to_download, reply_img_text)
+                reply_img_src = '{}/{}'.format(thread, reply_img_text)
                 image_count += 1
 
         reply_name = reply.find_all("span", {"class":"name"})[0].text

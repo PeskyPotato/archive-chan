@@ -5,7 +5,7 @@ from time import time
 from post import Post
 import os
 
-url = ''
+# url = ''
 preserve = False
 thread = ''
 cat = ''
@@ -21,8 +21,8 @@ Get user input, assigns url, thread, flags and
 all other global variables
 '''
 def parse_input():
-    global url, preserve, thread, cat, path_to_download, total_retries, total_posts, verbose
-
+    global preserve, thread, cat, path_to_download, total_retries, total_posts, verbose
+    filePath = None
     # Parse input
     parser = argparse.ArgumentParser(description="Archives 4chan threads")
     parser.add_argument("Thread", help="Enter the link to the 4chan thread")
@@ -32,6 +32,7 @@ def parse_input():
     parser.add_argument("-v", "--verbose", help="Print more information on each post", action="store_true")
     
     args = parser.parse_args()
+
 
     url = args.Thread
 
@@ -47,32 +48,16 @@ def parse_input():
     if args.posts:
         total_posts = int(args.posts)
 
-    # Get thread
-    if len(sys.argv) == 2:
-        url = sys.argv[1]
-
-    url_split = url.split('/')
-    if url_split[-2] != 'thread':
-        thread = url_split[-2]
-        cat = url_split[-4]
-    else:
-        thread = url_split[-1]
-        cat = url_split[-3]
-
-    path_to_download = 'threads/{}/{}'.format(cat, thread)
-    if not os.path.exists(path_to_download):
-        os.makedirs(path_to_download)
-
-    if verbose: print("Downloading thread:", thread)
+    return url
 
 '''
 Parse html, get soup and write post and replies
 to html_file. Calls download if preserve is True
 '''
-def parse_html():
+def parse_html(thread_url):
     # Get page soup to parse
     req = Request(
-        url,
+        thread_url,
         data=None,
         headers={
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
@@ -95,10 +80,36 @@ def parse_html():
     writeOP(thread, cat, op_info)
     getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, thread, total_posts, cat)
 
+def parse_url(url):
+    global cat, thread
+    url_split = url.split('/')
+    if url_split[-2] != 'thread':
+        thread = url_split[-2]
+        cat = url_split[-4]
+    else:
+        thread = url_split[-1]
+        cat = url_split[-3]
+
+    path_to_download = 'threads/{}/{}'.format(cat, thread)
+    if not os.path.exists(path_to_download):
+        os.makedirs(path_to_download)
+
+    if verbose: print("Downloading thread:", thread)
+
+
 def main():
     start_time = time()
-    parse_input()
-    parse_html()
+    url  = parse_input()
+    if ".txt" in url:
+        with open(url, "r") as f:
+            for thread_url in f:
+                thread_url = thread_url.strip()
+                parse_url(thread_url)
+                parse_html(thread_url)
+
+    else:
+        parse_url(url)
+        parse_html(url)
     print("Time elapsed:", str(time()-start_time) + "s")
 
 if __name__ == "__main__":

@@ -64,6 +64,7 @@ boards = {
     "adv" : ["Advice","favicon-ws.ico", "styles-ws.css"],
     "lgbt" : ["LGBT", "favicon-ws.ico", "styles-ws.css"],
     "mlp" : ["Pony", "favicon-ws.ico", "styles-ws.css"],
+    "news" : ["Current News", "favicon-ws.ico", "styles-ws.css"],
     #MISC
     "b" : ["Random", "favicon.ico", "styles.css"],
     "r" : ["Requests", "favicon.ico", "styles.css"],

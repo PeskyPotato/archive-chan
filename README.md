@@ -18,7 +18,7 @@ usage: archiver.py [-h] [-p] [-r RETRIES] [--posts POSTS] [-v] Thread
 Archives 4chan threads
 
 positional arguments:
-  Thread                Enter the link to the 4chan thread
+  Thread                Enter the link or txt file of links to the 4chan thread
 
 optional arguments:
   -h, --help            show this help message and exit

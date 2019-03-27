@@ -81,7 +81,7 @@ def parse_html(thread_url):
     getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, thread, total_posts, cat)
 
 def parse_url(url):
-    global cat, thread
+    global cat, thread, path_to_download
     url_split = url.split('/')
     if url_split[-2] != 'thread':
         thread = url_split[-2]

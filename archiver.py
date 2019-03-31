@@ -85,9 +85,13 @@ def parse_url(url):
     url_split = url.split('/')
     if url_split[-2] != 'thread':
         thread = url_split[-2]
+        if "#" in thread:
+            thread  = thread.split("#")[-2]
         cat = url_split[-4]
     else:
         thread = url_split[-1]
+        if "#" in thread:
+            thread  = thread.split("#")[-2]
         cat = url_split[-3]
 
     path_to_download = 'threads/{}/{}'.format(cat, thread)
@@ -96,6 +100,12 @@ def parse_url(url):
 
     if verbose: print("Downloading thread:", thread)
 
+def archive(thread_url, v, p):
+    global verbose, preserve
+    verbose = v
+    preserve = p
+    parse_url(thread_url)
+    parse_html(thread_url)
 
 def main():
     start_time = time()
@@ -104,12 +114,10 @@ def main():
         with open(url, "r") as f:
             for thread_url in f:
                 thread_url = thread_url.strip()
-                parse_url(thread_url)
-                parse_html(thread_url)
+                archive(thread_url, verbose, preserve)
 
     else:
-        parse_url(url)
-        parse_html(url)
+        archive(url, verbose, preserve)
     print("Time elapsed:", str(time()-start_time) + "s")
 
 if __name__ == "__main__":

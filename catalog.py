@@ -39,7 +39,6 @@ def main():
         p = True
     if args.verbose:
         v = True
-        print("here:", v)
 
     catalog_threads(cat, v, p)
     print("Time elapsed:", str(time()-start_time) + "s")

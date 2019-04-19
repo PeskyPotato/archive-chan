@@ -2,6 +2,7 @@ from writer import *
 from getter import *
 import argparse
 from time import time
+from time import sleep
 from post import Post
 import os
 
@@ -69,9 +70,15 @@ def parse_html(thread_url):
         }
     )
 
-    uClient = urlopen(req)
-    page_html = uClient.read()
-    uClient.close()
+    try:
+        uClient = urlopen(req)
+        page_html = uClient.read()
+        uClient.close()
+    except Exception as e:
+        sleep(10)
+        uClient = urlopen(req)
+        page_html = uClient.read()
+        uClient.close()
 
     page_soup = soup(page_html, "lxml")
 

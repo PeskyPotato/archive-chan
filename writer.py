@@ -1,20 +1,21 @@
 # Boards
 boards = {
     #Japanese Culture
-    "a" : ["Anime and Manga", "favicon-ws.ico", "styles-ws.css"],
+    "a" : ["Anime & Manga", "favicon-ws.ico", "styles-ws.css"],
     "c" : ["Anime/Cute", "favicon-ws.ico", "styles-ws.css"],
     "w" : ["Anime/Wallpapers", "favicon-ws.ico", "styles-ws.css"],
     "m" : ["Mecha", "favicon-ws.ico", "styles-ws.css"],
-    "cgl" : ["Cosplay and EGL", "favicon-ws.ico", "styles-ws.css"],
+    "cgl" : ["Cosplay & EGL", "favicon-ws.ico", "styles-ws.css"],
     "cm" : ["Cute/Male", "favicon-ws.ico", "styles-ws.css"],
     "f" : ["Flash", "favicon.ico", "styles.css"],
     "n" : ["Transportation", "favicon-ws.ico", "styles-ws.css"],
     "jp" : ["Otaku Culture", "favicon-ws.ico", "styles-ws.css"], 
-    "vp" : ["Pokemon", "favicon-ws.ico", "styles-ws.css"],
-    #Interests
+    #Video Games
     "v" : ["Video Games", "favicon-ws.ico", "styles-ws.css"],
     "vg" : ["Video Games Generals", "favicon-ws.ico", "styles-ws.css"],
+    "vp" : ["Pokemon", "favicon-ws.ico", "styles-ws.css"],
     "vr" : ["Retro Games", "favicon-ws.ico", "styles-ws.css"],
+    #Interests
     "co" : ["Comics & Cartoons", "favicon-ws.ico", "styles-ws.css"],
     "g" : ["Technology", "favicon-ws.ico", "styles-ws.css"],
     "tv" : ["Television & Film", "favicon-ws.ico", "styles-ws.css"],
@@ -22,14 +23,13 @@ boards = {
     "o" : ["Auto", "favicon-ws.ico", "styles-ws.css"],
     "an" : ["Animals & Nature", "favicon-ws.ico", "styles-ws.css"],
     "tg" : ["Traditional Games", "favicon-ws.ico", "styles-ws.css"],
-    "qst" : ["Quests",  "favicon-ws.ico", "styles-ws.css"],
     "sp" : ["Sports", "favicon-ws.ico", "styles-ws.css"],
     "asp" : ["Alternative Sports", "favicon-ws.ico", "styles-ws.css"],
     "sci" : ["Science & Math", "favicon-ws.ico", "styles-ws.css"],
+    "his" : ["History & Humanities", "favicon-ws-ico", "styles-ws.css"],
     "int" : ["International",  "favicon-ws.ico", "styles-ws.css"],
     "out" : ["Outdoors", "favicon-ws.ico", "styles-ws.css"],
     "toy" : ["Toys", "favicon-ws.ico", "styles-ws.css"],
-    "biz" : ["Business & Finance", "favicon-ws.ico", "styles-ws.css"],
     #Creative 
     "i" : ["Oekaki", "favicon.ico", "styles.css"],
     "po" : ["Papercraft & Origami", "favicon-ws.ico", "styles-ws.css"],
@@ -37,12 +37,32 @@ boards = {
     "ck" : ["Food & Cooking", "favicon-ws.ico", "styles-ws.css"],
     "ic" : ["Artwork/Critique", "favicon.ico", "styles.css"],
     "wg" : ["Wallpapers/General", "favicon.ico", "styles.css"],
+    "lit" : ["Literature", "favicon-ws.ico", "styles-ws.css"],
     "mu" : ["Music", "favicon-ws.ico", "styles-ws.css"],
     "fa" : ["Fashion", "favicon-ws.ico", "styles-ws.css"],
     "3" : ["3DCG", "favicon-ws.ico", "styles-ws.css"],
     "gd" : ["Graphic Design", "favicon-ws.ico", "styles-ws.css"],
     "diy" : ["Do-It-Yourself", "favicon-ws.ico", "styles-ws.css"],
     "wsg" : ["Worksafe GIF", "favicon-ws.ico", "styles-ws.css"],
+    "qst" : ["Quests",  "favicon-ws.ico", "styles-ws.css"],
+    #Other
+    "biz" : ["Business & Finance", "favicon-ws.ico", "styles-ws.css"],
+    "trv" : ["Travel", "favicon-ws.ico", "styles-ws.css"],
+    "fit" : ["Fitness", "favicon-ws.ico", "styles-ws.css"],
+    "x" : ["Paranormal", "favicon-ws.ico", "styles-ws.css"],
+    "adv" : ["Advice","favicon-ws.ico", "styles-ws.css"],
+    "lgbt" : ["LGBT", "favicon-ws.ico", "styles-ws.css"],
+    "mlp" : ["Pony", "favicon-ws.ico", "styles-ws.css"],
+    "news" : ["Current News", "favicon-ws.ico", "styles-ws.css"],
+    "wsr" : ["Worksafe Requests", "favicon-ws.ico", "styles-ws.css"],
+    "vip" : ["Very Important Posts", "favicon-ws.ico", "styles-ws.css"],
+    #Misc.
+    "b" : ["Random", "favicon.ico", "styles.css"],
+    "r9k" : ["ROBOT9001", "favicon.ico", "styles.css"],
+    "pol" : ["Politically Incorrect", "favicon.ico", "styles.css"],
+    "bant" : ["International/Random", "favicon.ico", "styles.css"],
+    "soc" : ["Cams & Meetups", "favicon.ico", "styles.css"], 
+    "s4s" : ["Shit 4chan Says", "favicon.ico", "styles.css"]
     #Adult
     "s" : ["Beautiful Women", "favicon.ico", "styles.css"],
     "hc" : ["Hardcore", "favicon.ico", "styles.css"],
@@ -56,22 +76,7 @@ boards = {
     "hr" : ["High Resolution", "favicon.ico", "styles.css"],
     "gif" : ["Adult GIF", "favicon.ico", "styles.css"],
     "aco" : ["Adult Cartoons", "favicon.ico", "styles.css"],
-    #Other
-    "trv" : ["Travel", "favicon-ws.ico", "styles-ws.css"],
-    "fit" : ["Fitness", "favicon-ws.ico", "styles-ws.css"],
-    "x" : ["Paranormal", "favicon-ws.ico", "styles-ws.css"],
-    "lit" : ["Literature", "favicon-ws.ico", "styles-ws.css"],
-    "adv" : ["Advice","favicon-ws.ico", "styles-ws.css"],
-    "lgbt" : ["LGBT", "favicon-ws.ico", "styles-ws.css"],
-    "mlp" : ["Pony", "favicon-ws.ico", "styles-ws.css"],
-    "news" : ["Current News", "favicon-ws.ico", "styles-ws.css"],
-    #MISC
-    "b" : ["Random", "favicon.ico", "styles.css"],
-    "r" : ["Requests", "favicon.ico", "styles.css"],
-    "r9k" : ["ROBOT9001", "favicon.ico", "styles.css"],
-    "pol" : ["Politically Incorrect", "favicon.ico", "styles.css"],
-    "soc" : ["Cams & Meetups", "favicon.ico", "styles.css"], 
-    "s4s" : ["Shit 4chan Says", "favicon.ico", "styles.css"]
+    "r" : ["Adult Requests", "favicon.ico", "styles.css"],
 }
 
 '''

@@ -62,7 +62,7 @@ boards = {
     "pol" : ["Politically Incorrect", "favicon.ico", "styles.css"],
     "bant" : ["International/Random", "favicon.ico", "styles.css"],
     "soc" : ["Cams & Meetups", "favicon.ico", "styles.css"], 
-    "s4s" : ["Shit 4chan Says", "favicon.ico", "styles.css"]
+    "s4s" : ["Shit 4chan Says", "favicon.ico", "styles.css"],
     #Adult
     "s" : ["Beautiful Women", "favicon.ico", "styles.css"],
     "hc" : ["Hardcore", "favicon.ico", "styles.css"],

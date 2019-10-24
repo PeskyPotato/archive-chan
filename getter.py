@@ -5,7 +5,7 @@ from urllib.request import urlretrieve
 from urllib.error import URLError
 from writer import writeReply
 from os import sys
-from post import Post
+from models import Reply
 
 '''
 Donwload file to `path` with `name`. If fails wait and retry, 
@@ -56,9 +56,9 @@ def getOP(page_soup, verbose, preserve, path_to_download, total_retries, thread)
 
     if preserve:
         download(op_img_src, op_img_text, verbose, path_to_download, total_retries)
-        op_img_src = '{}/{}'.format(thread, op_img_text)
+        op_img_src = '{}/{}'.format(thread.tid, op_img_text)
 
-    p1 = Post(op_name, op_date, op_message, op_pid, op_img_src, op_img_text, op_subject)
+    p1 = Reply(op_name, op_date, op_message, op_pid, op_img_src, op_img_text, op_subject)
     return p1
 
 '''
@@ -73,7 +73,7 @@ Keyword arguments:
     total_retries   -- maximum number of retries on URLError as int
     thread          -- thread number from url as string
 '''
-def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, thread, total_posts, cat):
+def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, total_posts, thread):
     reply_post = page_soup.find_all("div", {"class":"postContainer replyContainer"})
     reply_count = 0 # stats counter for replies downloaded
     image_count = 1 # stats counter for images downloaded
@@ -91,7 +91,7 @@ def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries,
 
             if preserve:
                 download(reply_img_src, reply_img_text, verbose, path_to_download, total_retries)
-                reply_img_src = '{}/{}'.format(thread, reply_img_text)
+                reply_img_src = '{}/{}'.format(thread.tid, reply_img_text)
                 image_count += 1
 
         reply_name = reply.find_all("span", {"class":"name"})[0].text
@@ -100,15 +100,12 @@ def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries,
 
         if verbose: print("Downloading reply:", reply_pid, "replied on", reply_date[:-12])
         
-        reply_info = Post(reply_name, reply_date, reply_message, reply_pid, reply_img_src, reply_img)
+        reply_info = Reply(reply_name, reply_date, reply_message, reply_pid, reply_img_src, reply_img)
 
-        writeReply(thread, cat, reply_info)
+        writeReply(thread, reply_info)
 
         if total_posts:
             counter += 1
             if counter > total_posts:
                 return
         reply_count += 1
-
-def getNewRepliesWrite():
-    pass

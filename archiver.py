@@ -1,9 +1,9 @@
 from writer import *
 from getter import *
+from models import Thread
 import argparse
 from time import time
 from time import sleep
-from post import Post
 import re
 import os
 from multiprocessing import Process
@@ -24,8 +24,7 @@ Get user input, assigns url, thread, flags and
 all other global variables
 '''
 def parse_input():
-    global preserve, thread, cat, path_to_download, total_retries, total_posts, verbose
-    filePath = None
+    global preserve, total_retries, total_posts, verbose
     # Parse input
     parser = argparse.ArgumentParser(description="Archives 4chan threads")
     parser.add_argument("Thread", help="Enter the link to the 4chan thread")
@@ -57,10 +56,10 @@ def parse_input():
 Parse html, get soup and write post and replies
 to html_file. Calls download if preserve is True
 '''
-def parse_html(thread_url):
+def parse_html(thread):
     # Get page soup to parse
     req = Request(
-        thread_url,
+        thread.url,
         data=None,
         headers={
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
@@ -84,10 +83,10 @@ def parse_html(thread_url):
 
     page_soup = soup(page_html, "lxml")
 
-    writeHeader(thread, cat)
+    writeHeader(thread)
     op_info  = getOP(page_soup, verbose, preserve, path_to_download, total_retries, thread)    
-    writeOP(thread, cat, op_info)
-    getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, thread, total_posts, cat)
+    writeOP(thread, op_info)
+    getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, total_posts, thread)
 
 def parse_url(url):
     match =re.match(VALID_URL, url)
@@ -95,22 +94,25 @@ def parse_url(url):
         print("Improper URL")
         sys.exit(1)
 
-    global cat, thread, path_to_download
-    cat = match.group('board')
-    thread = match.group('thread')
+    global path_to_download
+    board = match.group('board')
+    thread_id = match.group('thread')
+    thread = Thread(thread_id, board, url)
 
-    path_to_download = 'threads/{}/{}'.format(cat, thread)
+    path_to_download = 'threads/{}/{}'.format(thread.board, thread.tid)
     if not os.path.exists(path_to_download):
         os.makedirs(path_to_download)
 
-    if verbose: print("Downloading thread:", thread)
+    if verbose: print("Downloading thread:", thread.tid)
+    return thread
 
 def archive(thread_url, v, p):
     global verbose, preserve
     verbose = v
     preserve = p
-    parse_url(thread_url)
-    parse_html(thread_url)
+    thread = parse_url(thread_url)
+
+    parse_html(thread)
 
 def main():
     processes = []

@@ -1,3 +1,5 @@
+from models import Thread
+
 # Boards
 boards = {
     #Japanese Culture
@@ -82,24 +84,22 @@ boards = {
 '''
 Creates a new file with thread id as filename and adds
 the html header information.
-thread - thread number from url as string
-cat - board thread belongs to (g, sci, lit etc...) as string
 '''
-def writeHeader(thread, cat):
-    with open("threads/{}/{}.html".format(cat, thread), "w") as html_file:
+def writeHeader(thread):
+    with open("threads/{}/{}.html".format(thread.board, thread.tid), "w") as html_file:
         html_file.write("<!DOCTYPE html>\n<html>\n<head>\n")
         html_file.write('\t<meta charset="utf-8"/>\n')
-        html_file.write('\t<link rel="stylesheet" href="../../assets/css/{}">\n'.format(boards[cat][2]))
-        html_file.write('\t<link rel="shortcut icon" type="image/ico" href="../../assets/favicon/{}"/>\n'.format(boards[cat][1]))
-        html_file.write('\t<title>' + thread + '</title>\n')
+        html_file.write('\t<link rel="stylesheet" href="../../assets/css/{}">\n'.format(boards[thread.board][2]))
+        html_file.write('\t<link rel="shortcut icon" type="image/ico" href="../../assets/favicon/{}"/>\n'.format(boards[thread.board][1]))
+        html_file.write('\t<title>' + thread.tid + '</title>\n')
         html_file.write('</head>\n<body>\n')
-        html_file.write('<div class="boardTitle">/{}/ - {}</div>\n'.format(cat, boards[cat][0]))
+        html_file.write('<div class="boardTitle">/{}/ - {}</div>\n'.format(thread.board, boards[thread.board][0]))
 
 '''
 Appends to a file the OPs post with image.
 '''
-def writeOP(thread, cat, op):
-    with open("threads/{}/{}.html".format(cat, thread), "a+") as html_file:
+def writeOP(thread, op):
+    with open("threads/{}/{}.html".format(thread.board, thread.tid), "a+") as html_file:
         # Title with link to media
         html_file.write('\t<div id="{}" class="post op">\n'.format(op.pid))
         html_file.write('\t\tFile:\n')
@@ -131,8 +131,8 @@ def writeOP(thread, cat, op):
 '''
 Appends to a file the a reply with an image if passed in
 '''
-def writeReply(thread, cat, reply):
-    with open("threads/{}/{}.html".format(cat, thread), "a+") as html_file:
+def writeReply(thread, reply):
+    with open("threads/{}/{}.html".format(thread.board, thread.tid), "a+") as html_file:
         # Title with link to media
         html_file.write('\t<div id="{}" class="post reply">\n'.format(reply.pid))
 

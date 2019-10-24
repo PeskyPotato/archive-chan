@@ -6,6 +6,7 @@ import requests
 import json
 import argparse
 from time import time
+from models import Thread
 
 
 def catalog_threads(cat, verbose, preserve):

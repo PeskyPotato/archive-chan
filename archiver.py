@@ -6,6 +6,7 @@ from time import sleep
 from post import Post
 import re
 import os
+from multiprocessing import Process
 
 VALID_URL = r'https?://boards.(4channel|4chan).org/(?P<board>[\w-]+)/thread/(?P<thread>[0-9]+)'
 preserve = False
@@ -112,16 +113,22 @@ def archive(thread_url, v, p):
     parse_html(thread_url)
 
 def main():
+    processes = []
     start_time = time()
     url  = parse_input()
     if ".txt" in url:
         with open(url, "r") as f:
             for thread_url in f:
                 thread_url = thread_url.strip()
-                archive(thread_url, verbose, preserve)
+                process = Process(target=archive, args=(thread_url, verbose, preserve))
+                process.start()
+                processes.append(process)
 
     else:
         archive(url, verbose, preserve)
+
+    for p in processes:
+        p.join()
     print("Time elapsed:", str(time()-start_time) + "s")
 
 if __name__ == "__main__":

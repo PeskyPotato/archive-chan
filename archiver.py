@@ -4,9 +4,10 @@ import argparse
 from time import time
 from time import sleep
 from post import Post
+import re
 import os
 
-# url = ''
+VALID_URL = r'https?://boards.(4channel|4chan).org/(?P<board>[\w-]+)/thread/(?P<thread>[0-9]+)'
 preserve = False
 thread = ''
 cat = ''
@@ -88,18 +89,14 @@ def parse_html(thread_url):
     getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, thread, total_posts, cat)
 
 def parse_url(url):
+    match =re.match(VALID_URL, url)
+    if not(match):
+        print("Improper URL")
+        sys.exit(1)
+
     global cat, thread, path_to_download
-    url_split = url.split('/')
-    if url_split[-2] != 'thread':
-        thread = url_split[-2]
-        if "#" in thread:
-            thread  = thread.split("#")[-2]
-        cat = url_split[-4]
-    else:
-        thread = url_split[-1]
-        if "#" in thread:
-            thread  = thread.split("#")[-2]
-        cat = url_split[-3]
+    cat = match.group('board')
+    thread = match.group('thread')
 
     path_to_download = 'threads/{}/{}'.format(cat, thread)
     if not os.path.exists(path_to_download):

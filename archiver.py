@@ -1,23 +1,20 @@
 from writer import *
 from getter import *
 from models import Thread
+import requests
 import argparse
 from time import time
 from time import sleep
 import re
 import os
-from multiprocessing import Process
+from multiprocessing import Process, Pool
+import signal
 
 VALID_URL = r'https?://boards.(4channel|4chan).org/(?P<board>[\w-]+)/thread/(?P<thread>[0-9]+)'
+verbose = False
 preserve = False
-thread = ''
-cat = ''
-path_to_download = '' 
 total_retries = 5
 total_posts = None
-verbose = False
-#number of posts, number of images
-stats = []
 
 '''
 Get user input, assigns url, thread, flags and 
@@ -35,9 +32,7 @@ def parse_input():
     
     args = parser.parse_args()
 
-
     url = args.Thread
-
     if args.preserve_files:
         preserve = True
 
@@ -57,7 +52,6 @@ Parse html, get soup and write post and replies
 to html_file. Calls download if preserve is True
 '''
 def parse_html(thread):
-    # Get page soup to parse
     req = Request(
         thread.url,
         data=None,
@@ -84,54 +78,76 @@ def parse_html(thread):
     page_soup = soup(page_html, "lxml")
 
     writeHeader(thread)
-    op_info  = getOP(page_soup, verbose, preserve, path_to_download, total_retries, thread)    
+    op_info  = getOP(page_soup, verbose, preserve, 
+                     path_to_download, total_retries, thread)    
     writeOP(thread, op_info)
-    getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, total_posts, thread)
+    getReplyWrite(page_soup, verbose, preserve, 
+                  path_to_download, total_retries, total_posts, thread)
 
-def parse_url(url):
-    match =re.match(VALID_URL, url)
+'''
+Get values from the url to create a Thread object.
+Passes the thread to parse_html to being download.
+'''
+def archive(thread_url):
+    global verbose, preserve
+    match =re.match(VALID_URL, thread_url)
     if not(match):
-        print("Improper URL")
+        print("Improper URL:", thread_url)
         sys.exit(1)
 
-    global path_to_download
     board = match.group('board')
     thread_id = match.group('thread')
-    thread = Thread(thread_id, board, url)
+    thread = Thread(thread_id, board, thread_url)
 
+    global path_to_download
     path_to_download = 'threads/{}/{}'.format(thread.board, thread.tid)
     if not os.path.exists(path_to_download):
         os.makedirs(path_to_download)
 
-    if verbose: print("Downloading thread:", thread.tid)
-    return thread
-
-def archive(thread_url, v, p):
-    global verbose, preserve
-    verbose = v
-    preserve = p
-    thread = parse_url(thread_url)
-
+    if verbose: 
+        print("Downloading thread:", thread.tid)
     parse_html(thread)
 
-def main():
+'''
+Checks the type of input and creates list of urls
+which are then used to call archive.
+'''
+def feeder(url):
     processes = []
-    start_time = time()
-    url  = parse_input()
     if ".txt" in url:
         with open(url, "r") as f:
             for thread_url in f:
-                thread_url = thread_url.strip()
-                process = Process(target=archive, args=(thread_url, verbose, preserve))
-                process.start()
-                processes.append(process)
-
+                processes.append(thread_url.strip())
+    elif url in boards:
+        url_api = "https://a.4cdn.org/{}/threads.json".format(url)
+        r = requests.get(url_api)
+        if r.status_code == 200:
+            data = r.json()
+            for page in data:
+                for thread in page["threads"]:
+                    processes.append("http://boards.4chan.org/{}/thread/{}".format(url, thread["no"]))
+        else:
+            print("Invalid request:", url)
     else:
-        archive(url, verbose, preserve)
+        archive(url)
 
-    for p in processes:
-        p.join()
-    print("Time elapsed:", str(time()-start_time) + "s")
+    sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
+    pool = Pool(processes=4)
+    signal.signal(signal.SIGINT, sigint_handler)
+    try:
+        res = pool.map_async(archive, processes)
+        res.get(60)
+    except KeyboardInterrupt:
+        print("Terminating download")
+        pool.terminate()
+    else:
+        pool.close()
+
+def main():
+    start_time = time()
+    url  = parse_input()
+    feeder(url)
+    print("Time elapsed: %.4fs" % (time()-start_time))
 
 if __name__ == "__main__":
     main()

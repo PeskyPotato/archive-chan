@@ -9,7 +9,7 @@ This program has the ability to download entire threads saving the format of the
 
 ## Usage
 
-### Archive 4chan threads
+### Archive 4chan threads or catalogs
 
 To archive one or multiple threads of your choosing pass in the thread url or a text file of thread urls each on a new line to `archiver.py`. A number of flags can be set in addition to this.
 
@@ -36,26 +36,7 @@ Here is an example that downloads every post in a thread and saves all the media
 pepe@boysclub ~/4chan-archiver$ python3 archiver.py http://boards.4channel.org/p/thread/3434289/ect-edit-challenge-thread -p
 ```
 
-### Archive all active threads from catalog
-
-To archive all the threads pass in the board as a positional argument to `catalog.py`. A number of flags can be set in addition to this.
-
-This is the help output
-```
-pepe@boysclub:~/4chan-archiver$ python3 catalog.py -h
-usage: catalog.py [-h] [-p] [-v] Board
-
-Archives 4chan threads
-
-positional arguments:
-  Board                 Enter the board to download
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -p, --preserve_files  Save images and video files locally
-  -v, --verbose         Print more information on each post
-
-```
+To archive all the threads pass in the board as a positional argument. A number of flags can be set in addition to this.
 
 Here is an example that downloads every active post in a /g/.
 ```

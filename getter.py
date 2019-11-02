@@ -100,7 +100,7 @@ def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries,
 
         if verbose: print("Downloading reply:", reply_pid, "replied on", reply_date[:-12])
         
-        reply_info = Reply(reply_name, reply_date, reply_message, reply_pid, reply_img_src, reply_img)
+        reply_info = Reply(reply_name, reply_date, reply_message, reply_pid, reply_img_src, reply_img_text)
 
         writeReply(thread, reply_info)
 

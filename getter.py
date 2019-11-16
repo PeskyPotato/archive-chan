@@ -48,8 +48,8 @@ def getOP(page_soup, verbose, preserve, path_to_download, total_retries, thread)
     op_img_text = op_post[0].find_all("div", {"class":"fileText"})[0].find_all("a")[0].text
     op_subject = op_post[0].find_all("span", {"class":"subject"})[0].text
     op_name = op_post[0].find_all("span", {"class":"name"})[0].text
-    op_date = op_post[0].find_all("span", {"class":"dateTime"})[0].text
-    op_pid = op_post[0].find_all("div", {"class":"post op"})[0]['id']
+    op_date = op_post[0].find_all("span", {"class":"dateTime"})[0].text.split("No")[0]
+    op_pid = op_post[0].find_all("div", {"class":"post op"})[0]['id'][1:]
     op_img_src = 'https:{}'.format(op_img_src)
 
     if verbose: print("Downloading post:", op_pid, "posted on", op_date[:-12])
@@ -95,10 +95,10 @@ def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries,
                 image_count += 1
 
         reply_name = reply.find_all("span", {"class":"name"})[0].text
-        reply_date = reply.find_all("span", {"class":"dateTime"})[0].text
-        reply_pid = reply.find_all("div", {"class":"post reply"})[0]['id']
+        reply_date = reply.find_all("span", {"class":"dateTime"})[0].text.split("No")[0]
+        reply_pid = reply.find_all("div", {"class":"post reply"})[0]['id'][1:]
 
-        if verbose: print("Downloading reply:", reply_pid, "replied on", reply_date[:-12])
+        if verbose: print("Downloading reply:", reply_pid, "replied on", reply_date[:-9])
         
         reply_info = Reply(reply_name, reply_date, reply_message, reply_pid, reply_img_src, reply_img_text)
 

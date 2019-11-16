@@ -101,7 +101,7 @@ Appends to a file the OPs post with image.
 def writeOP(thread, op):
     with open("threads/{}/{}.html".format(thread.board, thread.tid), "a+") as html_file:
         # Title with link to media
-        html_file.write('\t<div id="{}" class="post op">\n'.format(op.pid))
+        html_file.write('\t<div id="p{}" class="post op">\n'.format(op.pid))
         html_file.write('\t\tFile:\n')
         html_file.write('\t\t<a id="postlink" href="{}">{}</a>\n\t\t<br>\n'.format(op.img_src, op.img_text))
 
@@ -115,12 +115,13 @@ def writeOP(thread, op):
             html_file.write('\t\t<p style="float: left;">\n')
             html_file.write('\t\t\t<img src="{}" style="max-height: 250px">\n\t\t</p>\n'.format(op.img_src))
 
-        # Message beside media
+        # Message beside media with post information
         html_file.write('\t\t<p style="float: left;">\n\t\t\t<br>\n')
-        html_file.write('\t\t\t<div>\n')
+        html_file.write('\t\t\t<div id="pi{}" class="postInfo">\n'.format(op.pid))
         html_file.write('\t\t\t<span class="subject">{}</span>\n'.format(op.subject))
         html_file.write('\t\t\t<span class="name">{}</span>\n'.format(op.name))
         html_file.write('\t\t\t<span class="dateTime">{}</span>\n'.format(op.date))
+        html_file.write('\t\t\t<span class"postNum">No.{}</span>\n'.format(op.pid))
         html_file.write('\t\t</div>\n')
         html_file.write('\t\t\t{}\n'.format(op.message))
         html_file.write("\t\t</p>\n")
@@ -134,13 +135,20 @@ Appends to a file the a reply with an image if passed in
 def writeReply(thread, reply):
     with open("threads/{}/{}.html".format(thread.board, thread.tid), "a+") as html_file:
         # Title with link to media
-        html_file.write('\t<div id="{}" class="post reply">\n'.format(reply.pid))
+        html_file.write('\t<div id="p{}" class="post reply">\n'.format(reply.pid))
+
+        # Post information
+        html_file.write('\t\t<p style="float: left;">\n\t\t\t<br>\n')
+        html_file.write('\t\t\t<div id="pi{}" class="postInfo">\n'.format(reply.pid))
+        html_file.write('\t\t\t<span class="name">{}</span>\n'.format(reply.name))
+        html_file.write('\t\t\t<span class="dateTime">{}</span>\n'.format(reply.date))
+        html_file.write('\t\t\t<span class"postNum">No.{}</span>\n'.format(reply.pid))
 
         # Media
         if reply.img_src != '':
-            html_file.write('\t\tFile:\n')
-            html_file.write('\t\t<a id="postlink" href="{}">{}</a>\n\t\t'.format(reply.img_src, reply.img_text))
-        html_file.write('\t\t{}\n\t\t<br>\n'.format(reply.date))
+            html_file.write('<br>\t\tFile:\n')
+            html_file.write('\t\t<a id="postlink" href="p{}">{}</a>\n\t\t'.format(reply.img_src, reply.img_text))
+        # html_file.write('\t\t{}\n\t\t<br>\n'.format(reply.date))
 
         if reply.img_src != '':
             if reply.img_src[-4:] == 'webm':
@@ -151,12 +159,8 @@ def writeReply(thread, reply):
             else:
                 html_file.write('\t\t<p style="float: left;">\n')
                 html_file.write('\t\t\t<img src="{}" style="max-height: 250px">\n\t\t</p>\n'.format(reply.img_src))
-        
-        # Message beside media
-        html_file.write('\t\t<p style="float: left;">\n\t\t\t<br>\n')
-        html_file.write('\t\t\t<div>\n')
-        html_file.write('\t\t\t<span class="name">{}</span>\n'.format(reply.name))
-        html_file.write('\t\t\t<span class="dateTime">{}</span>\n'.format(reply.date))
+
+        # Message
         html_file.write('\t\t</div>\n')
         html_file.write('\t\t\t{}\n'.format(reply.message))
         html_file.write("\t\t</p>\n")

@@ -76,7 +76,6 @@ def parse_html(thread):
         uClient.close()
 
     page_soup = soup(page_html, "lxml")
-
     writeHeader(thread)
     op_info  = getOP(page_soup, verbose, preserve, 
                      path_to_download, total_retries, thread)    

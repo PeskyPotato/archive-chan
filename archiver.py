@@ -1,20 +1,20 @@
-from writer import *
 from getter import *
-from models import Thread
+from flask import Flask, render_template
+from multiprocessing import Process, Pool
+from time import time, sleep
 import requests
 import argparse
-from time import time
-from time import sleep
 import re
 import os
-from multiprocessing import Process, Pool
 import signal
+from models import Thread, boards
 
 VALID_URL = r'https?://boards.(4channel|4chan).org/(?P<board>[\w-]+)/thread/(?P<thread>[0-9]+)'
 verbose = False
 preserve = False
 total_retries = 5
 total_posts = None
+app = Flask('archive-chan', template_folder='./assets/templates/')
 
 '''
 Get user input, assigns url, thread, flags and 
@@ -76,12 +76,15 @@ def parse_html(thread):
         uClient.close()
 
     page_soup = soup(page_html, "lxml")
-    writeHeader(thread)
     op_info  = getOP(page_soup, verbose, preserve, 
                      path_to_download, total_retries, thread)    
-    writeOP(thread, op_info)
-    getReplyWrite(page_soup, verbose, preserve, 
+    replies = getReplyWrite(page_soup, verbose, preserve, 
                   path_to_download, total_retries, total_posts, thread)
+    
+    with app.app_context():
+        rendered = render_template('thread.html', thread=thread, op=op_info, replies=replies)
+        with open("threads/{}/{}.html".format(thread.board, thread.tid), "w+") as html_file:
+            html_file.write(rendered)
 
 '''
 Get values from the url to create a Thread object.

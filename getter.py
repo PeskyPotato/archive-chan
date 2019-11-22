@@ -3,7 +3,6 @@ from urllib.request import Request
 from urllib.request import urlopen
 from urllib.request import urlretrieve
 from urllib.error import URLError
-from writer import writeReply
 from os import sys
 from models import Reply
 
@@ -75,9 +74,7 @@ Keyword arguments:
 '''
 def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries, total_posts, thread):
     reply_post = page_soup.find_all("div", {"class":"postContainer replyContainer"})
-    reply_count = 0 # stats counter for replies downloaded
-    image_count = 1 # stats counter for images downloaded
-    counter = 1
+    replies = []
     for reply in reply_post:
         reply_message = reply.find_all("blockquote", {"class":"postMessage"})[0]
         reply_img = reply.find_all("div", {"class":"fileText"})
@@ -92,7 +89,6 @@ def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries,
             if preserve:
                 download(reply_img_src, reply_img_text, verbose, path_to_download, total_retries)
                 reply_img_src = '{}/{}'.format(thread.tid, reply_img_text)
-                image_count += 1
 
         reply_name = reply.find_all("span", {"class":"name"})[0].text
         reply_date = reply.find_all("span", {"class":"dateTime"})[0].text.split("No")[0]
@@ -101,11 +97,5 @@ def getReplyWrite(page_soup, verbose, preserve, path_to_download, total_retries,
         if verbose: print("Downloading reply:", reply_pid, "replied on", reply_date[:-9])
         
         reply_info = Reply(reply_name, reply_date, reply_message, reply_pid, reply_img_src, reply_img_text)
-
-        writeReply(thread, reply_info)
-
-        if total_posts:
-            counter += 1
-            if counter > total_posts:
-                return
-        reply_count += 1
+        replies.append(reply_info)
+    return replies

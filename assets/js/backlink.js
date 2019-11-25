@@ -11,7 +11,7 @@ window.onload = function () {
         if (blDiv == null) {
             blDiv = document.createElement("div");
             blDiv.setAttribute("id", "bl_"+quotedID);
-            blDiv.classList.add("backlink")
+            blDiv.classList.add("backlink");
         }
         var quotedPost = document.getElementById("pi"+quotedID);
         quotedPost.appendChild(blDiv);

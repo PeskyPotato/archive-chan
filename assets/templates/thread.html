@@ -2,79 +2,86 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<link rel="stylesheet" href="../../assets/css/{{ thread.css }}">
+    <link rel="stylesheet" href="../../assets/css/{{ thread.css }}">
+    <link rel="stylesheet" href="../../assets/css/styles.css">
 	<link rel="shortcut icon" type="image/ico" href="../../assets/favicon/{{ thread.fav }}"/>
     <script type="text/javascript" src="../../assets/js/backlink.js"></script>	
-    <title>{{ thread.pid }}</title>
+    <title>{{ thread.tid }}</title>
 </head>
 <body>
-    <div class="boardTitle">/{{ thread.board }}/ - {{ thread.board_name }}</div>
-	<div id="p{{ op.pid }}" class="post op">
-		File:
-		<a id="postlink" href="{{ op.img_src }}">{{ op.img_text }}</a>
-        <br>
-        
-        {% if op.is_img %}
-		<p style="float: left;">
-			<img src="{{ op.img_src }}" style="max-height: 250px">
-        </p>
-        {% endif %}
-
-        {% if op.is_webm %}
-        <p style="float: left;">
-            <video height="450" controls>
-                <source src="{{ op.img_src }}" type="video/webm"> 
-            </video>
-        </p>
-        {% endif %}
-
-		<p style="float: left;">
-			<br>
-			<div id="pi{{ op.pid }}" class="postInfo">
-			<span class="subject">{{ op.subject }}</span>
-			<span class="nameBlock">{{ op.name }}</span>
-			<span class="dateTime">{{ op.date }}</span>
-			<span class="postNum">No.{{ op.pid }}</span>
-        </div>
-            {{ op.message|safe }}
-		</p>
-		<div style="clear: both;"></div>
+    <div class="boardBanner">
+        <div class="boardTitle">/{{ thread.board }}/ - {{ thread.board_name }}</div>
     </div>
-    {% for reply in replies %}
-        <div id="p{{ reply.pid }}" class="post reply">
-            <p style="float: left;">
-                <br>
-                <div id="pi{{ reply.pid }}" class="postInfo">
-                    <span class="name">{{ reply.name }}</span>
-                    <span class="dateTime">{{ reply.date }}</span>
-                    <span class="postNum">No.{{ reply.pid }}</span>
+    <div id="t{{ thread.tid }}" class="thread">
+        <div id="pc{{ op.pid }}" class="postContainer opContainer">
+            <div id="p{{ op.pid }}" class="post op">
+                <div id="f{{ op.pid }}" class="file">
+                    <div id="fT{{ op.pid }}" class="fileText">
+                        File:
+                        <a id="postlink" href="{{ op.img_src }}">{{ op.img_text }}</a>
+                    </div>
+                    {% if op.is_img %}
+                        <a href="{{ op.img_src }}" class="fileThumb" target="_blank"> 
+                            <img src="{{ op.img_src }}" style="max-height: 250px">
+                        </a>
+                    {% endif %}
+    
+                    {% if op.is_webm %}
+                        <a href="{{ op.img_src }}" class="fileThumb" target="_blank"> 
+                            <video style="max-width: 426px; max-height: 240px;" class="expandedWebm"controls>
+                                <source src="{{ op.img_src }}" type="video/webm"> 
+                            </video>
+                        </a>
+                    {% endif %}
                 </div>
-                {% if reply.is_img %}
-                    <br>
-                    File:
-                    <a id="postlink" href="p{{ reply.img_src }}">{{ reply.img_text }}</a>
+                    <div id="pi{{ op.pid }}" class="postInfo desktop">
+                    <span class="subject">{{ op.subject }}</span>
+                    <span class="nameBlock"><span class="name">{{ op.name }}</span></span>
+                    <span class="dateTime">{{ op.date }}</span>
+                    <span class="postNum">No.{{ op.pid }}</span>
+                    </div>
+                    {{ op.message|safe }}
+            </div>
+        </div>
+        {% for reply in replies %}
+            <div id="pc{{ reply.pid }}" class="postContainer replyContainer">
+                <div id="p{{ reply.pid }}" class="post reply">
+                    <div id="pi{{ reply.pid }}" class="postInfo desktop">
+                        <span class="nameBlock"><span class="name">{{ reply.name }}</span></span>
+                        <span class="dateTime">{{ reply.date }}</span>
+                        <span class="postNum desktop">No.{{ reply.pid }}</span>
+                    </div>
+                    {% if reply.is_img %}
+                        <div id="f{{ reply.pid }}" class="file">
+                            <div id="fT{{ reply.pid }}" class="fileText">
+                                File:
+                                <a id="postlink" href="p{{ reply.img_src }}" target="_blank">{{ reply.img_text }}</a>
+                            </div>
+                            <a href="{{ reply.img_src}}" class="fileThumb" target="_blank">
+                                <img src="{{ reply.img_src }}" style="max-height: 250px">
+                            </a>
+                        </div>
 
-                    <p style="float: left;">
-                        <img src="{{ reply.img_src }}" style="max-height: 250px">
-                    </p>
-                {% endif %}
-        
-                {% if op.is_webm %}
-                    <br>
-                    File:
-                    <a id="postlink" href="p{{ reply.img_src }}">{{ reply.img_text }}</a>
-
-                    <p style="float: left;">
-                        <video height="450" controls>
-                            <source src="{{ reply.img_src }}" type="video/webm"> 
-                        </video>
-                    </p>
-                {% endif %}
-                
-                {{ reply.message|safe }}
-            </p>
-            <div style="clear: both;"></div>
-        </div>	
-    {% endfor %}
+                    {% endif %}
+            
+                    {% if op.is_webm %}
+                        <div id="f{{ reply.pid }}" class="file">
+                            <div id="fT{{ reply.pid }}" class="fileText">
+                                File:
+                                <a id="postlink" href="p{{ reply.img_src }}" target="_blank">{{ reply.img_text }}</a>
+                            </div>
+                            <a href="{{ reply.img_src}}" class="fileThumb" target="_blank">
+                                <video style="max-width: 426px; max-height: 240px;" class="expandedWebm"controls>
+                                    <source src="{{ reply.img_src }}" type="video/webm"> 
+                                </video>
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    {{ reply.message|safe }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

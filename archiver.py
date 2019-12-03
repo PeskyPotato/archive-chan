@@ -35,10 +35,18 @@ def parse_input():
         params.verbose = True
 
     if args.retries:
-        params.total_retries = int(args.retries)
+        try:
+            params.total_retries = int(args.retries)
+        except ValueError:
+            print("Number of retries must be an integer.")
+            os.sys.exit(1)
 
     if args.posts:
-        params.total_posts = int(args.posts)
+        try:
+            params.total_posts = int(args.posts)
+        except ValueError:
+            print("Number of posts must be an integer.")
+            os.sys.exit(1)
 
     return url
 

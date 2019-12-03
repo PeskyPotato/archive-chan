@@ -98,14 +98,16 @@ def getReplyWrite(page_soup, params, thread):
     """
     Gets the reply information from page soup and
     returns a list of replies.
-
-    TODO:
-        * limit replies saved based on params
     """
 
     reply_post = page_soup.find_all("div", {"class": "postContainer replyContainer"})
     replies = []
-    for reply in reply_post:
+    total_posts = len(reply_post)
+    if params.total_posts:
+        total_posts = min(params.total_posts, len(reply_post))
+
+    for i in range(0, total_posts):
+        reply = reply_post[i]
         reply_message = reply.find_all("blockquote", {"class": "postMessage"})[0]
         reply_img = reply.find_all("div", {"class": "fileText"})
         reply_img_src = ''

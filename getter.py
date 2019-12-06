@@ -77,7 +77,7 @@ def getOP(page_soup, params, thread):
     op_message = op_post[0].find_all("blockquote", {"class": "postMessage"})[0]
     op_img_src = op_post[0].find_all("div", {"class": "fileText"})[0].find_all("a")[0]['href']
     op_img_text = op_post[0].find_all("div", {"class": "fileText"})[0].find_all("a")[0].text
-    op_subject = op_post[0].find_all("span", {"class": "subject"})[0].text
+    op_subject = op_post[0].find_all("span", {"class": "subject"})[1].text
     op_name = op_post[0].find_all("span", {"class": "name"})[0].text
     op_date = op_post[0].find_all("span", {"class": "dateTime"})[0].text.split("No")[0]
     op_pid = op_post[0].find_all("div", {"class": "post op"})[0]['id'][1:]

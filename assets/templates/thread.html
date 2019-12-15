@@ -9,9 +9,15 @@
     <title>/{{ thread.board }}/ - {{ op.subject }} - {{ thread.board_name }}</title>
 </head>
 <body>
+    <div id="Top"></div>
     <div class="boardBanner">
         <div class="boardTitle">/{{ thread.board }}/ - {{ thread.board_name }}</div>
     </div>
+    <hr>
+    <div>
+        [ <a href="#Bottom">Bottom</a> ]
+    </div>
+    <hr>
     <div id="t{{ thread.tid }}" class="thread">
         <div id="pc{{ op.pid }}" class="postContainer opContainer">
             <div id="p{{ op.pid }}" class="post op">
@@ -83,5 +89,11 @@
             </div>
         {% endfor %}
     </div>
+    <hr>
+    <div>
+        [ <a href="#Top">Top</a> ]
+    </div>
+    <hr>
+    <div id="Bottom"></div>
 </body>
 </html>

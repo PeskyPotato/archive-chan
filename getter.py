@@ -84,7 +84,7 @@ def getOP(page_soup, params, thread):
     op_img_src = 'https:{}'.format(op_img_src)
 
     if params.verbose:
-        print("Downloading post:", op_pid, "posted on", op_date[:-12])
+        print("Downloading post:", op_pid, "posted on", op_date[:-9])
 
     if params.preserve:
         download(op_img_src, op_img_text, params)

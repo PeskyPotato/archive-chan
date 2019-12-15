@@ -111,6 +111,12 @@ class Reply:
         self.is_webm = False
         self.set_conditionals()
 
+        if not self.subject:
+            if len(self.message.text) > 50:
+                self.subject = self.message.text[:50]
+            else:
+                self.subject = self.message.text
+
     def set_conditionals(self):
         if (self.img_src != ""):
             if (self.img_src[-4:] == 'webm'):

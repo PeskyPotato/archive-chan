@@ -5,8 +5,8 @@ import re
 import signal
 import argparse
 import requests
-from getter import parse_html
 from models import Thread, boards, Params
+from extractors.extractor import Extractor
 
 params = Params()
 VALID_URL = r'https?://boards.(4channel|4chan).org/(?P<board>[\w-]+)/thread/(?P<thread>[0-9]+)'
@@ -54,7 +54,7 @@ def parse_input():
 def archive(thread_url):
     """
     Get values from the url to create a Thread object.
-    Passes the thread to parse_html to being download.
+    Passes the thread to parse_html to be download.
     """
 
     match = re.match(VALID_URL, thread_url)
@@ -72,7 +72,7 @@ def archive(thread_url):
 
     if params.verbose:
         print("Downloading thread:", thread.tid)
-    parse_html(thread, params)
+    Extractor().extract(thread, params)
 
 
 def feeder(url):
@@ -87,7 +87,7 @@ def feeder(url):
         with open(url, "r") as f:
             for thread_url in f:
                 processes.append(thread_url.strip())
-    # a board
+    # a board (only gets from 4chan)
     elif url in boards:
         url_api = "https://a.4cdn.org/{}/threads.json".format(url)
         r = requests.get(url_api)

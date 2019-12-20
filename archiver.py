@@ -7,9 +7,9 @@ import argparse
 import requests
 from models import Thread, boards, Params
 from extractors.extractor import Extractor
+from extractors.fourchan import FourChanE
 
 params = Params()
-VALID_URL = r'https?://boards.(4channel|4chan).org/(?P<board>[\w-]+)/thread/(?P<thread>[0-9]+)'
 
 
 def parse_input():
@@ -56,8 +56,14 @@ def archive(thread_url):
     Get values from the url to create a Thread object.
     Passes the thread to parse_html to be download.
     """
+    match = None
+    # check for valid urls in extractors
+    for cls in Extractor.__subclasses__():
+        extractor = None
+        if re.match(cls.VALID_URL, thread_url):
+            match = re.match(cls.VALID_URL, thread_url)
+            extractor = cls()
 
-    match = re.match(VALID_URL, thread_url)
     if not(match):
         print("Improper URL:", thread_url)
         os.sys.exit(1)
@@ -72,7 +78,7 @@ def archive(thread_url):
 
     if params.verbose:
         print("Downloading thread:", thread.tid)
-    Extractor().extract(thread, params)
+    extractor.extract(thread, params)
 
 
 def feeder(url):
@@ -107,7 +113,7 @@ def feeder(url):
     signal.signal(signal.SIGINT, sigint_handler)
     try:
         res = pool.map_async(archive, processes)
-        res.get(60)
+        res.get(86400)
     except KeyboardInterrupt:
         print("Terminating download")
         pool.terminate()

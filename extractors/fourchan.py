@@ -14,20 +14,26 @@ class FourChanE(Extractor):
     def getOP(self, page_soup, params, thread):
         op_post = page_soup.find_all("div", {"class": "postContainer opContainer"})
         op_message = op_post[0].find_all("blockquote", {"class": "postMessage"})[0]
-        op_img_src = op_post[0].find_all("div", {"class": "fileText"})[0].find_all("a")[0]['href']
-        op_img_text = op_post[0].find_all("div", {"class": "fileText"})[0].find_all("a")[0].text
+
+        op_img = op_post[0].find_all("div", {"class": "fileText"})
+        op_img_src = ''
+        op_img_text = ''
+        if len(op_img) > 0:
+            op_img_src = op_img[0].find("a")["href"]
+            op_img_text = op_img[0].find("a").text
+            op_img_src = 'https:{}'.format(op_img_src)
+
+            if params.preserve:
+                self.download(op_img_src, op_img_text, params)
+                op_img_src = '{}/{}'.format(thread.tid, op_img_text)
+
         op_subject = op_post[0].find_all("span", {"class": "subject"})[1].text
         op_name = op_post[0].find_all("span", {"class": "name"})[0].text
         op_date = op_post[0].find_all("span", {"class": "dateTime"})[0].text.split("No")[0]
         op_pid = op_post[0].find_all("div", {"class": "post op"})[0]['id'][1:]
-        op_img_src = 'https:{}'.format(op_img_src)
 
         if params.verbose:
             print("Downloading post:", op_pid, "posted on", op_date[:-9])
-
-        if params.preserve:
-            self.download(op_img_src, op_img_text, params)
-            op_img_src = '{}/{}'.format(thread.tid, op_img_text)
 
         p1 = Reply(op_name, op_date, op_message, op_pid, op_img_src, op_img_text, op_subject)
         return p1

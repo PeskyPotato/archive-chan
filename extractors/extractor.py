@@ -13,17 +13,10 @@ class Extractor:
     def extract(self, thread, params):
         # self.parse_html(thread, params)
         pass
-
-    def parse_html(self, thread, params):
-        """
-        Parse html, get soup and write post and replies
-        to html_file. Calls download if preserve is True
-        """
-
-        app = Flask('archive-chan', template_folder='./assets/templates/')
-
+    
+    def get_page(self, url):
         req = Request(
-            thread.url,
+            url,
             data=None,
             headers={
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
@@ -40,11 +33,23 @@ class Extractor:
             page_html = uClient.read()
             uClient.close()
         except Exception as e:
-            print(e, "retrying...")
-            sleep(10)
-            uClient = urlopen(req)
-            page_html = uClient.read()
-            uClient.close()
+            print(e)
+            return None
+
+        return page_html
+
+    def parse_html(self, thread, params):
+        """
+        Parse html, get soup and write post and replies
+        to html_file. Calls download if preserve is True
+        """
+
+        app = Flask('archive-chan', template_folder='./assets/templates/')
+
+        page_html = self.get_page(thread.url)
+
+        if page_html is None:
+            return
 
         page_soup = soup(page_html, "lxml")
         op_info = self.getOP(page_soup, params, thread)

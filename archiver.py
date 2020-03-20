@@ -66,7 +66,7 @@ def archive(thread_url):
 
     if not(match):
         print("Improper URL:", thread_url)
-        os.sys.exit(1)
+        return 1
 
     board = match.group('board')
     thread_id = match.group('thread')

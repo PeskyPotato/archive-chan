@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup as soup
 from urllib.request import Request, urlopen, urlretrieve
 from urllib.error import URLError
-from time import sleep
 from flask import Flask, render_template
 from models import Reply
 
@@ -13,7 +12,7 @@ class Extractor:
     def extract(self, thread, params):
         # self.parse_html(thread, params)
         pass
-    
+
     def get_page(self, url):
         req = Request(
             url,

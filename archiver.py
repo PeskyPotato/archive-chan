@@ -8,6 +8,7 @@ import requests
 from models import Thread, boards, Params
 from extractors.extractor import Extractor
 from extractors.fourchan import FourChanE
+from extractors.fourchan_api import FourChanAPIE
 
 params = Params()
 

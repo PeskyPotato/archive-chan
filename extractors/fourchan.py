@@ -3,7 +3,8 @@ from models import Reply
 
 
 class FourChanE(Extractor):
-    VALID_URL = r'https?://boards.(4channel|4chan).org/(?P<board>[\w-]+)/thread/(?P<thread>[0-9]+)'
+    # VALID_URL = r'https?://boards.(4channel|4chan).org/(?P<board>[\w-]+)/thread/(?P<thread>[0-9]+)'
+    VALID_URL = r''
 
     def __init__(self):
         pass

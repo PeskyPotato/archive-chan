@@ -112,10 +112,10 @@ class Reply:
         self.set_conditionals()
 
         if not self.subject:
-            if len(self.message.text) > 50:
-                self.subject = self.message.text[:50]
+            if len(self.message) > 50:
+                self.subject = self.message[:50]
             else:
-                self.subject = self.message.text
+                self.subject = self.message
 
     def set_conditionals(self):
         if (self.img_src != ""):

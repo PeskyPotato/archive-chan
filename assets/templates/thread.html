@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../../assets/css/styles.css">
 	<link rel="shortcut icon" type="image/ico" href="../../assets/favicon/{{ thread.fav }}"/>
     <script type="text/javascript" src="../../assets/js/backlink.js"></script>	
-    <title>/{{ thread.board }}/ - {{ op.subject }} - {{ thread.board_name }}</title>
+    <title>/{{ thread.board }}/ - {{ op.sub }} - {{ thread.board_name }}</title>
 </head>
 <body>
     <div id="Top"></div>
@@ -19,72 +19,71 @@
     </div>
     <hr>
     <div id="t{{ thread.tid }}" class="thread">
-        <div id="pc{{ op.pid }}" class="postContainer opContainer">
-            <div id="p{{ op.pid }}" class="post op">
-                <div id="f{{ op.pid }}" class="file">
-                    <div id="fT{{ op.pid }}" class="fileText">
+        <div id="pc{{ op.no }}" class="postContainer opContainer">
+            <div id="p{{ op.no }}" class="post op">
+                <div id="f{{ op.no }}" class="file">
+                    <div id="fT{{ op.no }}" class="fileText">
                         File:
-                        <a id="postlink" href="{{ op.img_src }}">{{ op.img_text }}</a>
+                        <a id="postlink" href="{{ op.img_src }}">{{ op.filename }}{{ op.ext }}</a>
                     </div>
-                    {% if op.is_img %}
-                        <a href="{{ op.img_src }}" class="fileThumb" target="_blank"> 
-                            <img src="{{ op.img_src }}" style="max-height: 250px">
-                        </a>
+                    {% if op.tim != 0 %}
+                        {% if (op.ext == '.jpg') or (op.ext == '.png') or (op.ext == '.gif') %}
+                            <a href="{{ op.img_src }}" class="fileThumb" target="_blank"> 
+                                <img src="{{ op.img_src }}" style="max-height: 250px">
+                            </a>
+                        {% elif op.ext == '.webm' %}        
+                            <a href="{{ op.img_src }}" class="fileThumb" target="_blank"> 
+                                <video style="max-width: 426px; max-height: 240px;" class="expandedWebm"controls>
+                                    <source src="{{ op.img_src }}" type="video/webm"> 
+                                </video>
+                            </a>
+                        {% endif %}
                     {% endif %}
-    
-                    {% if op.is_webm %}
-                        <a href="{{ op.img_src }}" class="fileThumb" target="_blank"> 
-                            <video style="max-width: 426px; max-height: 240px;" class="expandedWebm"controls>
-                                <source src="{{ op.img_src }}" type="video/webm"> 
-                            </video>
-                        </a>
-                    {% endif %}
-                </div>
-                    <div id="pi{{ op.pid }}" class="postInfo desktop">
-                    <span class="subject">{{ op.subject }}</span>
+                    </div>
+                    <div id="pi{{ op.no }}" class="postInfo desktop">
+                    <span class="subject">{{ op.sub }}</span>
                     <span class="nameBlock"><span class="name">{{ op.name }}</span></span>
-                    <span class="dateTime">{{ op.date }}</span>
-                    <span class="postNum">No.{{ op.pid }}</span>
+                    <span class="dateTime">{{ op.now }}</span>
+                    <span class="postNum">No.{{ op.no }}</span>
                     </div>
-                    {{ op.message|safe }}
+                    {{ op.com|safe }}
             </div>
         </div>
         {% for reply in replies %}
-            <div id="pc{{ reply.pid }}" class="postContainer replyContainer">
-                <div id="p{{ reply.pid }}" class="post reply">
-                    <div id="pi{{ reply.pid }}" class="postInfo desktop">
+            <div id="pc{{ reply.no }}" class="postContainer replyContainer">
+                <div id="p{{ reply.no }}" class="post reply">
+                    <div id="pi{{ reply.no }}" class="postInfo desktop">
                         <span class="nameBlock"><span class="name">{{ reply.name }}</span></span>
-                        <span class="dateTime">{{ reply.date }}</span>
-                        <span class="postNum desktop">No.{{ reply.pid }}</span>
+                        <span class="dateTime">{{ reply.now }}</span>
+                        <span class="postNum desktop">No.{{ reply.no }}</span>
                     </div>
-                    {% if reply.is_img %}
-                        <div id="f{{ reply.pid }}" class="file">
-                            <div id="fT{{ reply.pid }}" class="fileText">
-                                File:
-                                <a id="postlink" href="p{{ reply.img_src }}" target="_blank">{{ reply.img_text }}</a>
+                    {% if reply.tim != 0 %}
+                        {% if (reply.ext == '.jpg') or (reply.ext == '.png') or (reply.ext == '.gif') %}
+                            <div id="f{{ reply.no }}" class="file">
+                                <div id="fT{{ reply.no }}" class="fileText">
+                                    File:
+                                    <a id="postlink" href="p{{ reply.img_src }}" target="_blank">{{ reply.filename }}{{ reply.ext }}</a>
+                                </div>
+                                <a href="{{ reply.img_src}}" class="fileThumb" target="_blank">
+                                    <img src="{{ reply.img_src }}" style="max-height: 250px">
+                                </a>
                             </div>
-                            <a href="{{ reply.img_src}}" class="fileThumb" target="_blank">
-                                <img src="{{ reply.img_src }}" style="max-height: 250px">
-                            </a>
-                        </div>
-
-                    {% endif %}
-            
-                    {% if op.is_webm %}
-                        <div id="f{{ reply.pid }}" class="file">
-                            <div id="fT{{ reply.pid }}" class="fileText">
-                                File:
-                                <a id="postlink" href="p{{ reply.img_src }}" target="_blank">{{ reply.img_text }}</a>
+                        {% elif reply.ext == '.webm' %}
+                            <div id="f{{ reply.no }}" class="file">
+                                <div id="fT{{ reply.no }}" class="fileText">
+                                    File:
+                                    <a id="postlink" href="p{{ reply.img_src }}" target="_blank">{{ reply.filename }}{{ reply.ext }}</a>
+                                </div>
+                                <a href="{{ reply.img_src}}" class="fileThumb" target="_blank">
+                                    <video style="max-width: 426px; max-height: 240px;" class="expandedWebm"controls>
+                                        <source src="{{ reply.img_src }}" type="video/webm"> 
+                                    </video>
+                                </a>
                             </div>
-                            <a href="{{ reply.img_src}}" class="fileThumb" target="_blank">
-                                <video style="max-width: 426px; max-height: 240px;" class="expandedWebm"controls>
-                                    <source src="{{ reply.img_src }}" type="video/webm"> 
-                                </video>
-                            </a>
-                        </div>
+                        {% endif %}
                     {% endif %}
                     
-                    {{ reply.message|safe }}
+                    {{ reply.com|safe }}
                 </div>
             </div>
         {% endfor %}

@@ -38,24 +38,19 @@ class FourChanAPIE(Extractor):
 
     def getOP(self, params, thread):
         op_post = self.thread_data["posts"][0]
-        op_name = op_post["name"]
-        op_date = op_post["now"]
-        op_message = op_post.get("com", "")
-        op_pid = op_post["no"]
-        op_subject = op_post["sub"]
 
         if "tim" in op_post.keys():
-            op_img_src = "https://i.4cdn.org/{}/{}{}".format(thread.board, op_post["tim"], op_post["ext"])
+            op_post["img_src"] = "https://i.4cdn.org/{}/{}{}".format(thread.board, op_post["tim"], op_post["ext"])
             op_img_text = "{}{}".format(op_post["filename"], op_post["ext"])
 
             if params.preserve:
-                self.download(op_img_src, op_img_text, params)
-                op_img_src = '{}/{}'.format(thread.tid, op_img_text)
+                self.download(op_post["img_src"], op_img_text, params)
+                op_post["img_src"] = '{}/{}'.format(thread.tid, op_img_text)
 
         if params.verbose:
-            print("Downloading post:", op_pid, "posted on", op_date)
+            print("Downloading post:", op_post["no"], "posted on", op_post["now"])
 
-        p1 = Reply(op_name, op_date, op_message, op_pid, op_img_src, op_img_text, op_subject)
+        p1 = Reply(op_post)
         return p1
 
     def getReplyWrite(self, params, thread):
@@ -68,25 +63,17 @@ class FourChanAPIE(Extractor):
 
         for i in range(0, total_posts):
             reply = reply_post[i]
-            reply_message = reply.get("com", "")
 
-            reply_img_src = ''
-            reply_img_text = ''
             if "tim" in reply.keys():
-                reply_img_src = "https://i.4cdn.org/{}/{}{}".format(thread.board, reply["tim"], reply["ext"])
+                reply["img_src"] = "https://i.4cdn.org/{}/{}{}".format(thread.board, reply["tim"], reply["ext"])
                 reply_img_text = "{}{}".format(reply["filename"], reply["ext"])
-
                 if params.preserve:
-                    self.download(reply_img_src, reply_img_text, params)
-                    reply_img_src = '{}/{}'.format(thread.tid, reply_img_text)
-
-            reply_name = reply["name"]
-            reply_date = reply["now"]
-            reply_pid = reply["no"]
+                    self.download(reply["img_src"], reply_img_text, params)
+                    reply["img_src"] = '{}/{}'.format(thread.tid, reply_img_text)
 
             if params.verbose:
-                print("Downloading reply:", reply_pid, "replied on", reply_date)
+                print("Downloading reply:", reply["no"], "replied on", reply["now"])
 
-            reply_info = Reply(reply_name, reply_date, reply_message, reply_pid, reply_img_src, reply_img_text)
+            reply_info = Reply(reply)
             replies.append(reply_info)
         return replies

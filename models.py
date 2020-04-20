@@ -99,31 +99,57 @@ class Params():
 
 
 class Reply:
-    def __init__(self, name, date, message, pid, img_src=None, img_text=None, subject=None):
-        self.name = name
-        self.date = date
-        self.message = message
-        self.pid = pid
-        self.img_src = img_src
-        self.img_text = img_text
-        self.subject = subject
-        self.is_img = False
-        self.is_webm = False
-        self.set_conditionals()
+    def __init__(self, post):
+        self.no = 0
+        self.resto = 0
+        self.sticky = 0
+        self.closed = 0
+        self.now = ""
+        self.time = 0
+        self.name = "Anonymous"
+        self.trip = ""
+        self.id = ""
+        self.capcode = ""
+        self.country = "XX"
+        self.country_name = ""
+        self.sub = ""
+        self.com = ""
+        self.tim = 0
+        self.filename = ""
+        self.ext = ""
+        self.fsize = 0
+        self.md5 = ""
+        self.w = 0
+        self.h = 0
+        self.tn_w = 0
+        self.tn_h = 0
+        self.filedeleted = 0
+        self.spoiler = 0
+        self.custom_spoler = 0
+        self.replies = 0
+        self.images = 0
+        self.bumplimit = 0
+        self.imagelimit = 0
+        self.tag = ""
+        self.semantic_url = ""
+        self.since4pass = 0
+        self.unique_ips = 0
+        self.m_img = 0
+        self.archived = 0
+        self.archived_on = 0
+        self.tail_size = 0
 
-        if not self.subject:
-            if len(self.message) > 50:
-                self.subject = self.message[:50]
-            else:
-                self.subject = self.message
+        self.img_src = ""
 
-    def set_conditionals(self):
-        if (self.img_src != ""):
-            if (self.img_src[-4:] == 'webm'):
-                self.is_webm = True
-            else:
-                self.is_img = True
+        allowed_keys = list(self.__dict__.keys())
 
+        self.__dict__.update((key, value) for key, value in post.items()
+                            if key in allowed_keys)
+
+        # Raise execption on rejected keys
+        rejected_keys = set(post.keys()) - set(allowed_keys)
+        if rejected_keys:
+            print("Warning: invalid reply keys: {}".format(rejected_keys))
 
 class Thread:
     def __init__(self, tid, board, url):

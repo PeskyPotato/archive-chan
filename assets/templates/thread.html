@@ -4,9 +4,10 @@
 	<meta charset="utf-8"/>
     <link rel="stylesheet" href="../../assets/css/{{ thread.css }}">
     <link rel="stylesheet" href="../../assets/css/styles.css">
+    <link rel="stylesheet" href="../../assets/css/flags.css">
 	<link rel="shortcut icon" type="image/ico" href="../../assets/favicon/{{ thread.fav }}"/>
     <script type="text/javascript" src="../../assets/js/backlink.js"></script>	
-    <title>/{{ thread.board }}/ - {{ op.sub }} - {{ thread.board_name }}</title>
+    <title>/{{ thread.board }}/ {% if op.sub != "" %}- {{ op.sub }} {% endif %} - {{ thread.board_name }}</title>
 </head>
 <body>
     <div id="Top"></div>
@@ -39,21 +40,47 @@
                             </a>
                         {% endif %}
                     {% endif %}
-                    </div>
-                    <div id="pi{{ op.no }}" class="postInfo desktop">
+                </div>
+                <div id="pi{{ op.no }}" class="postInfo desktop">
                     <span class="subject">{{ op.sub }}</span>
-                    <span class="nameBlock"><span class="name">{{ op.name }}</span></span>
+                    <span class="nameBlock">
+                        <span class="name">{{ op.name }}</span>
+                        {% if op.id != "" %}
+                            <span class="posteruid">
+                                (ID: <span>{{ op.id }}</span>)
+                            </span>
+                        {% endif %}
+                        {% if op.country != "XX" %}
+                            <span class="flag flag-{{ op.country|lower }}" title="{{ op.country_name }}"></span>
+                        {% endif %}
+                        {% if op.troll_country != "" %}
+                            <img src="../../assets/image/country/troll/{{ op.troll_country|lower }}.gif" alt="{{ op.troll_country }}" title="{{ reply.country_name }}" class="countryFlag">
+                        {% endif %}
+                    </span>
                     <span class="dateTime">{{ op.now }}</span>
                     <span class="postNum">No.{{ op.no }}</span>
-                    </div>
-                    {{ op.com|safe }}
+                </div>
+                {{ op.com|safe }}
             </div>
         </div>
         {% for reply in replies %}
             <div id="pc{{ reply.no }}" class="postContainer replyContainer">
                 <div id="p{{ reply.no }}" class="post reply">
                     <div id="pi{{ reply.no }}" class="postInfo desktop">
-                        <span class="nameBlock"><span class="name">{{ reply.name }}</span></span>
+                        <span class="nameBlock">
+                            <span class="name">{{ reply.name }}</span>
+                            {% if reply.id != "" %}
+                            <span class="posteruid">
+                                (ID: <span>{{ reply.id }}</span>)
+                            </span>
+                            {% endif %}
+                            {% if reply.country != "XX" %}
+                                <span class="flag flag-{{ reply.country|lower }}" title="{{ reply.country_name }}"></span>
+                            {% endif %}
+                            {% if reply.troll_country != "" %}
+                                <img src="../../assets/image/country/troll/{{ reply.troll_country|lower }}.gif" alt="{{ reply.troll_country }}" title="{{ reply.country_name }}" class="countryFlag">
+                            {% endif %}
+                        </span>
                         <span class="dateTime">{{ reply.now }}</span>
                         <span class="postNum desktop">No.{{ reply.no }}</span>
                     </div>

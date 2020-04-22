@@ -112,6 +112,7 @@ class Reply:
         self.capcode = ""
         self.country = "XX"
         self.country_name = ""
+        self.troll_country = ""
         self.sub = ""
         self.com = ""
         self.tim = 0
@@ -150,7 +151,6 @@ class Reply:
         rejected_keys = set(post.keys()) - set(allowed_keys)
         if rejected_keys:
             print("Warning: invalid reply keys: {}".format(rejected_keys))
-
 class Thread:
     def __init__(self, tid, board, url):
         self.tid = tid

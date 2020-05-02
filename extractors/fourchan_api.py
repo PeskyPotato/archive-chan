@@ -2,6 +2,7 @@ import requests
 from flask import Flask, render_template
 from .extractor import Extractor
 from models import Reply
+from resources.database.db_interface import Database
 
 
 class FourChanAPIE(Extractor):
@@ -9,6 +10,7 @@ class FourChanAPIE(Extractor):
 
     def __init__(self):
         self.thread_data = None
+        self.db = Database()
 
     def extract(self, thread, params):
         self.get_data(thread, params)
@@ -50,7 +52,9 @@ class FourChanAPIE(Extractor):
         if params.verbose:
             print("Downloading post:", op_post["no"], "posted on", op_post["now"])
 
+        op_post["board"] = thread.board
         p1 = Reply(op_post)
+        self.db.insert_reply(p1)
         return p1
 
     def getReplyWrite(self, params, thread):
@@ -74,6 +78,8 @@ class FourChanAPIE(Extractor):
             if params.verbose:
                 print("Downloading reply:", reply["no"], "replied on", reply["now"])
 
+            reply["board"] = thread.board
             reply_info = Reply(reply)
             replies.append(reply_info)
+            self.db.insert_reply(reply_info)
         return replies

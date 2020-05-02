@@ -126,7 +126,7 @@ class Reply:
         self.tn_h = 0
         self.filedeleted = 0
         self.spoiler = 0
-        self.custom_spoler = 0
+        self.custom_spoiler = 0
         self.replies = 0
         self.images = 0
         self.bumplimit = 0
@@ -141,6 +141,8 @@ class Reply:
         self.tail_size = 0
 
         self.img_src = ""
+        self.board = ""
+        self.custom_id = str(post["no"]) + str(post["time"])
 
         allowed_keys = list(self.__dict__.keys())
 

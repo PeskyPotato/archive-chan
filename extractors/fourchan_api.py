@@ -35,7 +35,7 @@ class FourChanAPIE(Extractor):
 
         with app.app_context():
             rendered = render_template('thread.html', thread=thread, op=op_info, replies=replies)
-            with open("threads/{}/{}.html".format(thread.board, thread.tid), "w+") as html_file:
+            with open("threads/{}/{}.html".format(thread.board, thread.tid), "w+", encoding='utf-8') as html_file:
                 html_file.write(rendered)
 
     def getOP(self, params, thread):

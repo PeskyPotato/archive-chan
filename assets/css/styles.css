@@ -636,3 +636,9 @@ table.flashListing .subject {
 	margin-right: 10px;
 	width: 200px
 }
+
+.thread-stats {
+	float: right;
+	margin-right: 5px;
+	cursor: default;
+}

@@ -85,6 +85,7 @@ class Params():
     total_retries = 5
     total_posts = None
     path_to_download = './'
+    use_db = False
 
     def __init__(self, *args, **kwargs):
         self.__instance = None
@@ -143,16 +144,19 @@ class Reply:
         self.img_src = ""
         self.board = ""
         self.custom_id = str(post["no"]) + str(post["time"])
+        self.preserved = False
 
         allowed_keys = list(self.__dict__.keys())
 
         self.__dict__.update((key, value) for key, value in post.items()
-                            if key in allowed_keys)
+                             if key in allowed_keys)
 
         # Raise execption on rejected keys
         rejected_keys = set(post.keys()) - set(allowed_keys)
         if rejected_keys:
             print("Warning: invalid reply keys: {}".format(rejected_keys))
+
+
 class Thread:
     def __init__(self, tid, board, url):
         self.tid = tid

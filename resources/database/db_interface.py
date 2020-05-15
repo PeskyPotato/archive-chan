@@ -86,13 +86,14 @@ class Database(object):
                                     archived integer,
                                     archived_on integer,
                                     tail_size integer,
+                                    preserved integer,
 
                                     FOREIGN KEY (board_id)
                                     REFERENCES boards(id)
                                 )""")
 
     def insert_board(self, board):
-        sql = '''INSERT INTO boards (
+        sql = '''INSERT OR REPLACE INTO boards (
                     board, title, ws_board, per_page, pages, max_filesize,
                     max_webm_filesize, max_comment_chars, max_webm_duration,
                     bump_limit, image_limit, cooldowns_t, cooldowns_r,
@@ -115,12 +116,12 @@ class Database(object):
                     w, h, tn_w, tn_h, filedeleted, spoiler, custom_spoiler,
                     replies, images, bumplimit, imagelimit, tag, semantic_url,
                     since4pass, unique_ips, m_img, archived, archived_on,
-                    tail_size
+                    tail_size, preserved
                 ) AS (
                     VALUES (
                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                        ?, ?, ?, ?, ?
+                        ?, ?, ?, ?, ?, ?
                     )
                 ) INSERT OR REPLACE INTO threads (
                     custom_id, no, resto, board_id, sticky, closed, now, time,
@@ -129,7 +130,7 @@ class Database(object):
                     h, tn_w, tn_h, filedeleted, spoiler, custom_spoiler,
                     replies, images, bumplimit, imagelimit, tag, semantic_url,
                     since4pass, unique_ips, m_img, archived, archived_on,
-                    tail_size
+                    tail_size, preserved
                 ) SELECT
                     ins.custom_id, ins.no, ins.resto, boards.id, ins.sticky,
                     ins.closed, ins.now, ins.time, ins.name, ins.trip,
@@ -139,7 +140,8 @@ class Database(object):
                     ins.tn_h, ins.filedeleted, ins.spoiler, ins.custom_spoiler,
                     ins.replies, ins.images, ins.bumplimit, ins.imagelimit,
                     ins.tag, ins.semantic_url, ins.since4pass, ins.unique_ips,
-                    ins.m_img, ins.archived, ins.archived_on, ins.tail_size
+                    ins.m_img, ins.archived, ins.archived_on, ins.tail_size,
+                    ins.preserved
                 FROM boards
                 JOIN ins
                 ON ins.board = boards.board
@@ -167,7 +169,7 @@ class Database(object):
                 reply.bumplimit, reply.imagelimit, reply.tag,
                 reply.semantic_url, reply.since4pass, reply.unique_ips,
                 reply.m_img, reply.archived, reply.archived_on,
-                reply.tail_size)
+                reply.tail_size, reply.preserved)
 
     def __del__(self):
         self.__connection.close()

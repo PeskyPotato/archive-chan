@@ -25,6 +25,7 @@ def parse_input():
     parser.add_argument("-r", "--retries", help="Set total number of retries if a download fails")
     parser.add_argument("--posts", help="Number of posts to download")
     parser.add_argument("-v", "--verbose", help="Print more information on each post", action="store_true")
+    parser.add_argument("--use_db", help="Stores threads into a database, this is experimental", action="store_true")
 
     args = parser.parse_args()
 
@@ -48,6 +49,9 @@ def parse_input():
         except ValueError:
             print("Number of posts must be an integer.")
             os.sys.exit(1)
+
+    if args.use_db:
+        params.use_db = True
 
     return url
 
@@ -108,7 +112,7 @@ def feeder(url):
     # single thread url
     else:
         archive(url)
- 
+
     sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
     pool = Pool(processes=4)
     signal.signal(signal.SIGINT, sigint_handler)

@@ -13,6 +13,8 @@ class FourChanAPIE(Extractor):
         self.db = Database()
 
     def extract(self, thread, params):
+        if params.use_db:
+            self.update_boards()
         self.get_data(thread, params)
 
     def get_data(self, thread, params):
@@ -53,8 +55,10 @@ class FourChanAPIE(Extractor):
             print("Downloading post:", op_post["no"], "posted on", op_post["now"])
 
         op_post["board"] = thread.board
+        op_post["preserved"] = params.preserve
         p1 = Reply(op_post)
-        self.db.insert_reply(p1)
+        if params.use_db:
+            self.db.insert_reply(p1)
         return p1
 
     def getReplyWrite(self, params, thread):
@@ -79,7 +83,40 @@ class FourChanAPIE(Extractor):
                 print("Downloading reply:", reply["no"], "replied on", reply["now"])
 
             reply["board"] = thread.board
+            reply["preserved"] = params.preserve
             reply_info = Reply(reply)
             replies.append(reply_info)
-            self.db.insert_reply(reply_info)
+            if params.use_db:
+                self.db.insert_reply(reply_info)
         return replies
+
+    def update_boards(self):
+        r = requests.get("https://a.4cdn.org/boards.json")
+        if(r.status_code == requests.codes.ok):
+            boards = r.json()
+        else:
+            return
+
+        keys = ["board", "title", "ws_board", "per_page", "pages",
+                "max_filesize", "max_webm_filesize", "max_comment_chars",
+                "max_webm_duration", "bump_limit", "image_limit",
+                "cooldowns_t", "cooldowns_r", "cooldowns_i",
+                "meta_description", "spoilers", "custom_spoilers",
+                "is_archived", "troll_flags", "country_flags", "user_ids",
+                "oekai", "sjis_tags", "code_tags", "text_only",
+                "forced_anon", "webm_audio", "require_subject",
+                "min_image_width", "min_image_height"]
+
+        for board in boards["boards"]:
+            print(board["title"], end="\r")
+            values = []
+            for key in keys:
+                if "cooldowns_t" == key:
+                    values.append(board["cooldowns"]["threads"])
+                elif "cooldowns_r" == key:
+                    values.append(board["cooldowns"]["replies"])
+                elif "cooldowns_i" == key:
+                    values.append(board["cooldowns"]["images"])
+                else:
+                    values.append(board.get(key, None))
+            self.db.insert_board(tuple(values))

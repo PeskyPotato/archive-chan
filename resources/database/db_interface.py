@@ -3,6 +3,8 @@ import sqlite3
 
 class Database(object):
     __DB_LOCATION = "./chan.db"
+    __thread_fields = ["custom_id", "board_id", "no", "resto", "sticky", "closed", "now", "time", "name", "trip", "p_id", "capcode", "country", "country_name", "troll_country", "sub", "com", "tim", "filename", "ext", "fsize", "md5", "w", "h", "tn_w", "tn_h", "filedeleted", "spoiler", "custom_spoiler", "replies", "images", "bumplimit", "imagelimit", "tag", "semantic_url", "since4pass", "unique_ips", "m_img", "archived", "archived_on", "tail_size", "preserved"]
+
 
     def __init__(self):
         self.__connection = sqlite3.connect(self.__DB_LOCATION)
@@ -170,6 +172,14 @@ class Database(object):
                 reply.semantic_url, reply.since4pass, reply.unique_ips,
                 reply.m_img, reply.archived, reply.archived_on,
                 reply.tail_size, reply.preserved)
+
+    def reply_to_dict(self, reply):
+        reply_dict = {}
+        i = 0
+        for value in reply:
+            reply_dict[self.__thread_fields[i]] = value
+            i += 1
+        return reply_dict
 
     def __del__(self):
         self.__connection.close()

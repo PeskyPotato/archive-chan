@@ -86,6 +86,8 @@ class Params():
     total_posts = None
     path_to_download = './'
     use_db = False
+    archived = False
+    archived_only = False
 
     def __init__(self, *args, **kwargs):
         self.__instance = None

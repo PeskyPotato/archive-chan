@@ -7,7 +7,6 @@ import argparse
 import requests
 from models import Thread, boards, Params
 from extractors.extractor import Extractor
-from extractors.fourchan import FourChanE
 from extractors.fourchan_api import FourChanAPIE
 
 params = Params()
@@ -20,16 +19,25 @@ def parse_input():
     """
 
     parser = argparse.ArgumentParser(description="Archives 4chan threads")
-    parser.add_argument("Thread", help="Enter the link to the 4chan thread")
+    parser.add_argument("thread", help="Enter the link to the 4chan thread")
     parser.add_argument("-p", "--preserve_files", help="Save images and video files locally", action="store_true")
     parser.add_argument("-r", "--retries", help="Set total number of retries if a download fails")
     parser.add_argument("--posts", help="Number of posts to download")
     parser.add_argument("-v", "--verbose", help="Print more information on each post", action="store_true")
     parser.add_argument("--use_db", help="Stores threads into a database, this is experimental", action="store_true")
-
+    parser.add_argument(
+        "-a", "--archived",
+        action="store_true",
+        help="Download threads from /archive/ as well"
+    )
+    parser.add_argument(
+        "-ao", "--archived_only",
+        action="store_true",
+        help="Downloads threads from /archive/ instead"
+    )
     args = parser.parse_args()
 
-    url = args.Thread
+    url = args.thread
     if args.preserve_files:
         params.preserve = True
 
@@ -52,6 +60,9 @@ def parse_input():
 
     if args.use_db:
         params.use_db = True
+
+    params.archived = args.archived
+    params.archived_only = args.archived_only
 
     return url
 
@@ -100,13 +111,26 @@ def feeder(url):
                 processes.append(thread_url.strip())
     # a board (only gets from 4chan)
     elif url in boards:
-        url_api = "https://a.4cdn.org/{}/threads.json".format(url)
-        r = requests.get(url_api)
-        if r.status_code == 200:
-            data = r.json()
-            for page in data:
-                for thread in page["threads"]:
-                    processes.append("http://boards.4chan.org/{}/thread/{}".format(url, thread["no"]))
+        if not params.archived_only:
+            url_api = "https://a.4cdn.org/{}/threads.json".format(url)
+            r = requests.get(url_api)
+            if r.status_code == 200:
+                data = r.json()
+                for page in data:
+                    for thread in page["threads"]:
+                        processes.append(
+                            "http://boards.4chan.org/{}/thread/{}".format(url, thread["no"])
+                        )
+        if params.archived or params.archived_only:
+            url_api = "https://a.4cdn.org/{}/archive.json".format(url)
+            r = requests.get(url_api)
+            if r.status_code == 200:
+                data = r.json()
+                for thread_no in data:
+                    processes.append(
+                        "http://boards.4chan.org/{}/thread/{}".format(url, thread_no)
+                    )
+
         else:
             print("Invalid request:", url)
     # single thread url

@@ -4,7 +4,6 @@ import os
 import re
 import signal
 import argparse
-import requests
 from models import Thread, boards, Params
 from extractors.extractor import Extractor
 from extractors.fourchan_api import FourChanAPIE
@@ -111,28 +110,9 @@ def feeder(url):
                 processes.append(thread_url.strip())
     # a board (only gets from 4chan)
     elif url in boards:
-        if not params.archived_only:
-            url_api = "https://a.4cdn.org/{}/threads.json".format(url)
-            r = requests.get(url_api)
-            if r.status_code == 200:
-                data = r.json()
-                for page in data:
-                    for thread in page["threads"]:
-                        processes.append(
-                            "http://boards.4chan.org/{}/thread/{}".format(url, thread["no"])
-                        )
-        if params.archived or params.archived_only:
-            url_api = "https://a.4cdn.org/{}/archive.json".format(url)
-            r = requests.get(url_api)
-            if r.status_code == 200:
-                data = r.json()
-                for thread_no in data:
-                    processes.append(
-                        "http://boards.4chan.org/{}/thread/{}".format(url, thread_no)
-                    )
-
-        else:
-            print("Invalid request:", url)
+        processes = FourChanAPIE.get_threads_from_board(
+            url, params.archived, params.archived_only, params.verbose
+        )
     # single thread url
     else:
         archive(url)
